@@ -1,0 +1,22 @@
+@import './mixins/_reboot';
+@import './mixins/_reset';
+@import './helpers/vairables';
+
+body {
+  background-color: $primary-color;
+  font-family: $font-family;
+}
+
+.wrapper {
+  width: $max-width;
+  margin: 0 auto;
+  
+}
+
+.header {
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+}
