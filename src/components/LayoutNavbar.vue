@@ -45,7 +45,6 @@ export default {
 
 .navbar {
   float: right;
-  margin-right: 137px;
   &__list {
     display: flex;
     justify-content: flex-start;
@@ -56,14 +55,30 @@ export default {
         margin-right: 0;
       }
       a {
+        position: relative;
         display: block;
         width: 80px;
         height: 110px;
         line-height: 110px;
         transition: all .2s;
+        &:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          z-index: -1;
+          width: 100%;
+          height: 0;
+          background-color: $primary-dark-color;
+          transition: all .3s ease-in;
+        }
         &:hover,
         &.router-link-active {
-          background-color: $primary-dark-color;
+          &:after {
+            bottom: 0;
+            height: 100%;
+          }
         }
         img {
           display: inline-block;

@@ -8,6 +8,13 @@
         Todo list
       </h2>
       <div class="todo__container">
+        <!-- <div class="todo__container__none">
+          <h2>Let’s start something fun</h2>
+          <img
+            src="../assets/images/todo_fun.svg"
+            alt=""
+          >
+        </div> -->
         <div class="todo__container__list">
           <ul class="todo__menu">
             <li>
@@ -38,19 +45,30 @@
             }"
           >
             <li
-              v-for="(item, key) in todoList"
-              :key="key"
+              v-for="item in todoList"
+              :key="item.id"
+              class="animated fadeInLeft"
             >
               <a
                 href="#"
                 class="task__done"
+                @click.prevent="completeTask(item.id)"
               />
-              <p class="task__name">
-                {{ item.name }}
-              </p>
+              <div class="task__name">
+                <p>{{ item.name }}</p>
+                <ul class="task__name--pomodoro">
+                  <li
+                    v-for="(num, index) in item.pomodoroNum"
+                    :key="index"
+                  />
+                </ul>
+              </div>
               <ul class="task__btn">
                 <li>
-                  <a href="#">
+                  <a
+                    href="#"
+                    @click.prevent="removeTask(item.id)"
+                  >
                     <img
                       src="../assets/images/todo_remove.svg"
                       alt=""
@@ -58,7 +76,10 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a
+                    href="#"
+                    class="animated-top"
+                  >
                     <img
                       src="../assets/images/todo_arrow_up.svg"
                       alt=""
@@ -66,7 +87,10 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a
+                    href="#"
+                    class="animated-top"
+                  >
                     <img
                       src="../assets/images/todo_arrow_down.svg"
                       alt=""
@@ -74,7 +98,10 @@
                   </a>
                 </li>
                 <li>
-                  <a href="#">
+                  <a
+                    href="#"
+                    @click.prevent="goToDoTask(item.name)"
+                  >
                     <img
                       src="../assets/images/todo_start.svg"
                       alt=""
@@ -87,22 +114,21 @@
           <ul
             v-if="menu === 'Done'"
             class="todo__list"
-            :class="{
-              'animated': menu === 'Done',
-              'fadeIn': menu === 'Done'
-            }"
           >
             <li
-              v-for="(item, key) in doneTodoList"
-              :key="key"
+              v-for="item in doneTodoList"
+              :key="item.id"
+              class="animated fadeInLeft"
             >
-              <a
-                href="#"
-                class="task__done"
-              />
-              <p class="task__name">
+              <div class="task__name">
                 {{ item.name }}
-              </p>
+                <ul class="task__name--pomodoro">
+                  <li
+                    v-for="(num, index) in item.pomodoroNum"
+                    :key="index"
+                  />
+                </ul>
+              </div>
               <p class="task__done__date">
                 {{ item.date }}
               </p>
@@ -111,22 +137,21 @@
         </div>
         <div class="todo__container__add">
           <input
-            id="addTask"
+            v-model="addTaskName"
             class="todo__container__add--input"
             type="text"
             name=""
             placeholder="Task…"
+            @keyup.enter="addedNewTask"
           >
-          <button class="todo__container__add--btn">
+          <button
+            class="todo__container__add--btn"
+            @click="addedNewTask"
+          >
             Add task
           </button>
         </div>
       </div>
-      <!-- <h2>Let’s start something fun</h2>
-      <img
-        src="../assets/images/todo_fun.svg"
-        alt=""
-      > -->
     </main>
   </div>
 </template>
@@ -141,7 +166,8 @@ export default {
   },
   data () {
     return {
-      menu: 'Todo'
+      menu: 'Todo',
+      addTaskName: ''
     }
   },
   computed: {
@@ -152,7 +178,7 @@ export default {
           return el
         }
       })
-      return newData
+      return newData.reverse()
     },
     doneTodoList () {
       const data = this.$store.state.todoList
@@ -161,7 +187,40 @@ export default {
           return el
         }
       })
-      return newData
+      return newData.reverse()
+    }
+  },
+  methods: {
+    removeTask (item) {
+      this.$store.dispatch('removedTask', item)
+    },
+    completeTask (item) {
+      this.$store.dispatch('completeTask', item)
+    },
+    goToDoTask (item) {
+      this.$store.dispatch('goToDoTask', item)
+      this.$store.dispatch('changeTimerViews', 'Pomodoro')
+      this.$store.dispatch('controlClockVisible', true)
+      this.$router.push('/')
+    },
+    addedNewTask () {
+      if (this.addTaskName) {
+        const time = new Date()
+        const year = time.getFullYear()
+        const month = `0${time.getMonth() + 1}`.substr(-2)
+        const date = `0${time.getDate()}`.substr(-2)
+        const timestamp = Math.floor(time / 1000)
+        const data = {
+          name: this.addTaskName,
+          id: timestamp,
+          date: `${year}-${month}-${date}`,
+          pomodoroNum: 0,
+          isCompleted: false
+        }
+        this.$store.dispatch('addedNewTask', data)
+        this.addTaskName = ''
+        this.menu = 'Todo'
+      }
     }
   }
 }
@@ -169,11 +228,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/scss/helpers/vairables';
-.content {
-  &__todo {
-    padding-left: 137px;
-  }
-}
 
 .todo {
   &__title {
@@ -185,6 +239,19 @@ export default {
   &__container {
     display: flex;
     justify-content: flex-start;
+    &__none {
+      margin-top: 133px;
+      margin-right: 104px;
+      text-align: center;
+      h2 {
+        margin-bottom: 60px;
+        font-size: 32px;
+        color: $mute-color;
+      }
+      img {
+        width: 210px;
+      }
+    }
     &__list {
       width: 495px;
     }
@@ -204,22 +271,67 @@ export default {
         margin-right: 0;
       }
       a {
+        position: relative;
         display: block;
         padding-top: 9px;
         padding-bottom: 9px;
         font-size: 20px;
         text-align: center;
         color: $mute-color;
-        border-bottom: 4px solid transparent;
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
+        &:after {
+          content: '';
+          position: absolute;
+          right: 51%;
+          bottom: -4px;
+          left: 51%;
+          width: 0;
+          height: 4px;
+          background-color: $secondary-color;
+          transition: all .3s ease-out;
+        }
         &:hover,
         &.active {
           font-weight: 700;
           color: $secondary-color;
-          border-bottom: 4px solid $secondary-color;
+          &:after {
+            right: 0;
+            left: 0;
+            width: 100%;
+          }
         }
       }
     }
+  }
+}
+
+@keyframes animatedUp {
+  0% {
+    transform: translateY(-5px);
+  }
+  33% {
+    transform: translateY(0px);
+  }
+  66% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes animatedRight {
+  0% {
+    transform: translateX(5px);
+  }
+  33% {
+    transform: translateX(0px);
+  }
+  66% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0px);
   }
 }
 
@@ -241,6 +353,10 @@ export default {
       margin-right: 15px;
       border-radius: 50%;
       border: 1px solid $secondary-color;
+      transition: all .2s;
+      &:hover {
+        background-color: $secondary-color;
+      }
       &__date {
         font-size: 20px;
         color: $secondary-color;
@@ -251,14 +367,40 @@ export default {
       margin-right: 80px;
       font-size: 20px;
       color: $secondary-color;
+      &--pomodoro {
+        display: flex;
+        margin-top: 7px;
+        li {
+          width: 10px;
+          height: 10px;
+          margin-right: 5px;
+          background-color: $secondary-dark-color;
+          border-radius: 50%;
+        }
+      }
     }
-    .task__btn {
-      display: flex;
-      justify-content: flex-start;
-      li {
-        margin-right: 20px;
-        &:last-child {
-          margin-right: 0;
+  }
+}
+
+.task__btn {
+  display: flex;
+  justify-content: flex-start;
+  li {
+    margin-right: 20px;
+    a {
+      display: block;
+      transition: all .3s ease-in;
+      &.animated-top:hover {
+        img {
+          animation: animatedUp .8s ease-in .1s;
+        }
+      }
+    }
+    &:last-child {
+      margin-right: 0;
+      a:hover {
+        img {
+          animation: animatedRight .8s ease-in .1s;
         }
       }
     }
@@ -293,7 +435,14 @@ export default {
     font-size: 20px;
     color: $primary-color;
     background-color: $secondary-color;
+    border: 1px solid transparent;
     border-radius: 4px;
+    transition: all .3s;
+    &:hover {
+      color: $secondary-color;
+      background-color: transparent;
+      border: 1px solid $secondary-color;
+    }
   }
 }
 </style>

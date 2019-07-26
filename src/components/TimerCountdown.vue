@@ -2,16 +2,16 @@
   <div>
     <!-- stop timer -->
     <timer-cancel
-      v-if="isStopCountdown"
+      v-if="isCancelCountdown"
       :class="{
-        'animated': isStopCountdown,
-        'fadeIn': isStopCountdown
+        'animated': isCancelCountdown,
+        'bounceIn': isCancelCountdown
       }"
-      @goClockViews="isStopCountdown = false"
+      @goClockViews="isCancelCountdown = false"
     />
     <!-- timer -->
     <div
-      v-if="!isStopCountdown"
+      v-if="!isCancelCountdown"
       class="timer__countdown"
     >
       <div class="timer__countdown__control">
@@ -26,9 +26,9 @@
           <div
             v-if="!isCountdown"
             :class="{
-              'animated': !isCountdown,
-              'fadeIn': !isCountdown
+              'fadeInDown': !isCountdown,
             }"
+            class="animated"
           >
             <a
               class="timer__countdown__control__btn--play"
@@ -42,9 +42,9 @@
           <div
             v-if="isCountdown"
             :class="{
-              'animated': isCountdown,
-              'fadeIn': !sCountdown
+              'fadeIn': isCountdown
             }"
+            class="animated"
           >
             <a
               class="timer__countdown__control__btn--pause"
@@ -66,13 +66,16 @@
         <!-- timer time's up -->
         <div
           v-if="isTimesUp"
-          class="timer__done"
+          :class="{
+            'fadeIn': isTimesUp,
+          }"
+          class="timer__done animated"
         >
           <ul class="timer__done__btn">
             <li>
               <a
                 href="#"
-                @click="controlViews('Short Break')"
+                @click.prevent="controlViews('Short Break')"
               >Take a short break？</a>
             </li>
             <li>
@@ -113,14 +116,14 @@ export default {
   },
   data () {
     return {
-      taskName: '“Unknown task”',
+      taskName: this.$store.state.currentTask,
       currentInterval: null,
       isCountdown: false,
-      isStopCountdown: false,
+      isCancelCountdown: false,
       isTimesUp: false,
       remainingMinutes: '25',
       remainingSeconds: '00',
-      totalSeconds: 1500
+      totalSeconds: 9
     }
   },
   watch: {
@@ -155,7 +158,7 @@ export default {
     },
     stopCountdown () {
       this.isCountdown = false
-      this.isStopCountdown = true
+      this.isCancelCountdown = true
       clearInterval(this.currentInterval)
       this.remainingMinutes = '25'
       this.remainingSeconds = '00'
@@ -171,6 +174,7 @@ export default {
       this.isCountdown = false
       this.isTimesUp = true
       clearInterval(this.currentInterval)
+      this.$store.dispatch('addPomodoroNum')
     }
   }
 }
@@ -181,13 +185,13 @@ export default {
 
 .timer__countdown {
   display: flex;
-  padding-left: 254px;
+  justify-content: center;
   margin-top: 68px;
 }
 
 .timer__countdown__control {
   min-width: 360px;
-  margin-right: 110px;
+  margin-right: 93px;
   &__number {
     font-size: 140px;
     font-weight: 700;
@@ -232,12 +236,18 @@ export default {
     }
     &--play {
       display: inline-block;
+      width: 50px;
+      height: 50px;
       .btn-play {
         display: inline-block;
         border-width: 25px 30px;
         border-style: solid;
         border-color: transparent transparent transparent $secondary-color;
         border-radius: 4px;
+        transition: all .3s;
+        &:hover {
+          transform: scale(1.05);
+        }
       }
     }
   }
@@ -257,9 +267,9 @@ export default {
     color: $secondary-color;
   }
   &--icon {
+    position: relative;
     width: 185px;
     height: 185px;
-    position: relative;
     margin-top: 82px;
     margin-left: 35px;
     background-color: $primary-color;
@@ -310,6 +320,7 @@ export default {
 .timer__done {
   margin-top: 60px;
   &__btn {
+    text-align: center;
     li {
       &:first-child {
         a {
@@ -333,14 +344,33 @@ export default {
       }
       &:last-child {
         a {
-          display: block;
+          position: relative;
+          display: inline-block;
+          padding-bottom: 10px;
           margin-top: 63px;
           font-size: 20px;
           text-align: center;
           color: $secondary-color;
-          transition: all .2s;
+          border-bottom: 2px solid transparent;
+          transition: all .3s ease-out;
+          &:after {
+            content: '';
+            position: absolute;
+            right: 51%;
+            bottom: -2px;
+            left: 51%;
+            width: 0;
+            height: 2px;
+            background-color: $secondary-color;
+            transition: all .3s ease-out;
+          }
           &:hover {
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            &:after {
+              width: 100%;
+              right: 0%;
+              left: 0%;
+            }
           }
         }
       }

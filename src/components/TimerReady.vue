@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     getReadyClock () {
-      this.$emit('goClockViews')
+      this.$store.dispatch('controlClockVisible', true)
     }
   }
 }
@@ -45,9 +45,8 @@ export default {
 
 .timer__ready {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-end;
-  padding-left: 254px;
   margin-top: 156px;
   &__btn {
     li {
@@ -78,6 +77,7 @@ export default {
     margin-left: 145px;
     img {
       display: block;
+      width: 243px;
     }
   }
 }

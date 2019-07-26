@@ -23,7 +23,6 @@ export default {
 .ringtone {
   float: left;
   margin-top: 55px;
-  margin-left: 95px;
   &__img {
     display: inline-block;
     vertical-align: bottom;

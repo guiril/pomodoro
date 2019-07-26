@@ -28,7 +28,6 @@
             'animated': !isClockVisible,
             'fadeIn': !isClockVisible
           }"
-          @goClockViews="controlClockVisible"
         />
         <timer-countdown
           v-if="isClockVisible"
@@ -67,13 +66,16 @@ export default {
   },
   data () {
     return {
-      isClockVisible: false,
-      isTimesUp: this.$store.state.isTimesUp
+      // isClockVisible: this.$store.state.isClockVisible
     }
   },
   computed: {
     currentViews () {
       let views = this.$store.state.timerViews
+      return views
+    },
+    isClockVisible () {
+      let views = this.$store.state.isClockVisible
       return views
     }
   },
@@ -82,7 +84,7 @@ export default {
       this.$store.dispatch('changeTimerViews', views)
     },
     controlClockVisible () {
-      this.isClockVisible = !this.isClockVisible
+      this.$store.dispatch('controlClockVisible', true)
     }
   }
 }
@@ -98,7 +100,7 @@ export default {
 .timer-menu {
   display: flex;
   justify-content: flex-start;
-  padding-left: 254px;
+  margin-left: 155px;
   li {
     width: 122px;
     margin-right: 66px;
@@ -106,18 +108,33 @@ export default {
       margin-right: 0;
     }
     a {
+      position: relative;
       display: block;
       padding: 9px 4px;
       font-size: 20px;
       text-align: center;
       color: $mute-color;
-      border-bottom: 4px solid transparent;
-      transition: all .2s ease-in-out;
+      transition: all .2s ease-out;
+      &:after {
+        content: '';
+        position: absolute;
+        right: 51%;
+        bottom: -4px;
+        left: 51%;
+        width: 0;
+        height: 4px;
+        background-color: $secondary-color;
+        transition: all .3s ease-out;
+      }
       &:hover,
       &.active {
         font-weight: 700;
         color: $secondary-color;
-        border-bottom: 4px solid $secondary-color;
+        &:after {
+          right: 0;
+          left: 0;
+          width: 100%;
+        }
       }
     }
   }

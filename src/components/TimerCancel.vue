@@ -21,7 +21,10 @@
       <span>or</span>
       <ul class="timer__cancel__btn">
         <li>
-          <a href="#">New pomodoro</a>
+          <a
+            href="#"
+            @click.prevent="newPomodoro"
+          >New pomodoro</a>
         </li>
         <li>
           <router-link to="/todo-list">
@@ -47,6 +50,10 @@ export default {
   methods: {
     getClockCountdown () {
       this.$emit('goClockViews')
+    },
+    newPomodoro () {
+      this.$router.push('/')
+      this.$store.dispatch('controlClockVisible', false)
     }
   }
 }
@@ -54,6 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/scss/helpers/vairables';
+
 .timer__cancel {
   margin-top: 92px;
   color: $secondary-color;
@@ -95,9 +103,31 @@ export default {
         margin-right: 0;
       }
       a {
+        position: relative;
         display: block;
+        width: 145px;
+        padding-bottom: 4px;
         font-size: 20px;
         color: $secondary-dark-color;
+        &:after {
+          content: '';
+          position: absolute;
+          right: 51%;
+          bottom: -4px;
+          left: 51%;
+          width: 0;
+          height: 2px;
+          background-color: $secondary-dark-color;
+          transition: all .3s ease-out;
+        }
+        &:hover {
+          letter-spacing: 0.3px;
+          &:after {
+            right: 0;
+            left: 0;
+            width: 100%;
+          }
+        }
       }
     }
   }
