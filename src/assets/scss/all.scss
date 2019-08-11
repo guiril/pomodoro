@@ -1,6 +1,6 @@
 @import './mixins/_reboot';
 @import './mixins/_reset';
-@import './helpers/vairables';
+@import './helpers/variables';
 
 body {
   background-color: $primary-color;
@@ -20,4 +20,10 @@ body {
     display: block;
     clear: both;
   }
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 700;
+  color: $secondary-color;
 }

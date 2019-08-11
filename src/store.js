@@ -8,26 +8,49 @@ export default new Vuex.Store({
     isClockVisible: false,
     timerViews: 'Pomodoro',
     currentTask: '“Unknown task”',
+    isAudioOn: true,
+    isPlayAudio: false,
     todoList: [
       {
         name: '吃飯',
         id: 'jkloi',
-        date: '2019-07-01',
-        pomodoroNum: 1,
-        isCompleted: false
+        date: '2019-08-02',
+        pomodoroNum: 3,
+        isCompleted: true
       },
       {
         name: '睡覺',
         id: 'rtyuj',
-        date: '2019-07-02',
+        date: '2019-08-02',
         pomodoroNum: 2,
-        isCompleted: false
+        isCompleted: true
       },
       {
         name: '打東東',
         id: 'nmkjh',
-        date: '2019-07-03',
+        date: '2019-08-02',
+        pomodoroNum: 1,
+        isCompleted: true
+      },
+      {
+        name: '吃飯',
+        id: 'gfere',
+        date: '2019-08-02',
+        pomodoroNum: 4,
+        isCompleted: false
+      },
+      {
+        name: '睡覺',
+        id: 'reretg',
+        date: '2019-08-02',
         pomodoroNum: 3,
+        isCompleted: false
+      },
+      {
+        name: '打東東',
+        id: 'rhghy',
+        date: '2019-08-02',
+        pomodoroNum: 2,
         isCompleted: false
       }
     ]
@@ -38,6 +61,9 @@ export default new Vuex.Store({
     },
     CONTROLCLOCKVISIBLE (state, status) {
       state.isClockVisible = status
+    },
+    CONTROLAUDIOSWITCH (state, status) {
+      state.isAudioOn = !state.isAudioOn
     },
     ADDTASK (state, status) {
       state.todoList.push(status)
@@ -83,7 +109,10 @@ export default new Vuex.Store({
     controlClockVisible (context, status) {
       context.commit('CONTROLCLOCKVISIBLE', status)
     },
-    addedNewTask (context, status) {
+    controlAudioSwitch (context, status) {
+      context.commit('CONTROLAUDIOSWITCH', status)
+    },
+    addNewTodo (context, status) {
       context.commit('ADDTASK', status)
     },
     removedTask (context, status) {

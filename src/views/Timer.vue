@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <item-ringtone />
+      <timer-ringtone />
       <layout-navbar />
     </header>
     <main class="content__timer">
@@ -49,16 +49,16 @@
 </template>
 
 <script>
-import ItemRingtone from '@/components/ItemRingtone'
 import LayoutNavbar from '@/components/LayoutNavbar'
-import TimerReady from '@/components/TimerReady'
-import TimerCountdown from '@/components/TimerCountdown'
-import TimerShortBreak from '@/components/TimerShortBreak'
+import TimerRingtone from '@/components/timer/TimerRingtone'
+import TimerReady from '@/components/timer/TimerReady'
+import TimerCountdown from '@/components/timer/TimerCountdown'
+import TimerShortBreak from '@/components/timer/TimerShortBreak'
 
 export default {
   name: 'Home',
   components: {
-    ItemRingtone,
+    TimerRingtone,
     LayoutNavbar,
     TimerReady,
     TimerCountdown,
@@ -66,17 +66,14 @@ export default {
   },
   data () {
     return {
-      // isClockVisible: this.$store.state.isClockVisible
     }
   },
   computed: {
     currentViews () {
-      let views = this.$store.state.timerViews
-      return views
+      return this.$store.state.timerViews
     },
     isClockVisible () {
-      let views = this.$store.state.isClockVisible
-      return views
+      return this.$store.state.isClockVisible
     }
   },
   methods: {
@@ -91,7 +88,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/helpers/vairables';
+@import '@/assets/scss/helpers/_variables.scss';
 
 .content__timer {
   margin-top: 68px;
