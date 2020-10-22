@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
+// @import '@/assets/scss/helpers/_variables.scss';
 
 .title {
   margin-bottom: 35px;

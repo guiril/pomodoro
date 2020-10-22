@@ -1,123 +1,118 @@
 <template>
   <div>
-    <!-- stop break time -->
-    <div
-      v-if="currentViews === 'stop'"
-      :class="{
-        'animated': currentViews === 'stop',
-        'bounceIn': currentViews === 'stop'
-      }"
-      class="break__stop"
-    >
-      <div class="break__stop__title">
-        <h3>Ready to work?</h3>
-        <h2>{{ taskName }}</h2>
+    <template v-if="currentViews === 'readyBreak'">
+      <div
+        :class="{ 'animated fadeIn': currentViews === 'readyBreak', }"
+        class="countdown-container"
+      >
+        <div class="countdown">
+          <span class="countdown__number">
+            {{ remainingMinutes }}:{{ remainingSeconds }}
+          </span>
+          <div class="countdown__control">
+            <div
+              v-if="!isCountdowning"
+              :class="{ 'animated fadeInDown': !isCountdowning }"
+            >
+              <a
+                class="countdown__play u-inline-block"
+                href="#"
+                @click.prevent="startCountdown"
+              >
+                <div class="play-icon" />
+              </a>
+            </div>
+            <div
+              v-if="isCountdowning"
+              :class="{ 'animated fadeIn': isCountdowning }"
+            >
+              <a
+                href="#"
+                class="countdown__pause u-inline-block"
+                @click.prevent="pauseCountdown"
+              >
+                <div class="pause-icon u-inline-block" />
+                <div class="pause-icon u-inline-block" />
+              </a>
+              <a
+                href="#"
+                class="stop u-inline-block"
+                @click.prevent="stopCountdown"
+              >
+                <div class="stop-icon" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="task">
+          <h2 class="task__title">
+            Time to Take a break
+          </h2>
+          <div class="break-icon">
+            <img
+              class="break-icon__img"
+              src="@/assets/images/break_tree.svg"
+              alt=""
+            >
+          </div>
+        </div>
       </div>
-      <div class="break__stop__restart">
+    </template>
+    <template v-if="currentViews === 'stopBreak'">
+      <div
+        :class="{ 'animated bounceIn': currentViews === 'stopBreak' }"
+        class="stop-break"
+      >
+        <h2 class="stop-break__title">
+          Ready to work?
+        </h2>
+        <h3 class="stop-break__task">
+          {{ taskTitle }}
+        </h3>
         <a
           href="#"
-          @click.prevent="restartCountdown"
+          class="stop-break__link u-inline-block"
+          @click.prevent="goTask"
         />
-      </div>
-      <span>or</span>
-      <ul class="break__stop__btn">
-        <li>
-          <a
-            href="#"
-            @click.prevent="newPomodoro"
-          >new pomodoro</a>
-        </li>
-        <li>
-          <router-link to="/todo-list">
-            Check Todo list
-          </router-link>
-        </li>
-      </ul>
-    </div>
-    <!-- break timer -->
-    <div
-      v-if="currentViews === 'ready'"
-      :class="{
-        'animated': currentViews === 'ready',
-        'fadeIn': currentViews === 'ready'
-      }"
-      class="timer__countdown"
-    >
-      <div class="timer__countdown__control">
-        <span class="timer__countdown__control__number">
-          {{ remainingMinutes }}:{{ remainingSeconds }}
-        </span>
-        <div class="timer__countdown__control__btn">
-          <!-- timer play button -->
-          <div
-            v-if="!isCountdown"
-            :class="{
-              'fadeInDown': !isCountdown,
-            }"
-            class="animated"
-          >
-            <a
-              class="timer__countdown__control__btn--play"
-              href="#"
-              @click.prevent="startCountdown"
-            >
-              <span class="btn-play" />
-            </a>
-          </div>
-          <!-- timer pause & stop button -->
-          <div
-            v-if="isCountdown"
-            :class="{
-              'fadeIn': isCountdown
-            }"
-            class="animated"
-          >
-            <a
-              class="timer__countdown__control__btn--pause"
-              href="#"
-              @click.prevent="pauseCountdown"
-            >
-              <span class="btn-pause" />
-              <span class="btn-pause" />
-            </a>
-            <a
-              class="timer__countdown__control__btn--stop"
-              href="#"
-              @click.prevent="stopCountdown"
-            >
-              <span class="btn-stop" />
-            </a>
-          </div>
+        <div class="normal-text">
+          or
         </div>
+        <ul class="action-list">
+          <li class="action-list__item">
+            <a
+              href="#"
+              class="action-list__link u-inline-block"
+              @click.prevent="newPomodoro"
+            >
+              new pomodoro
+            </a>
+          </li>
+          <li class="action-list__item">
+            <router-link
+              to="/todo-list"
+              class="action-list__link u-inline-block"
+            >
+              Check Todo list
+            </router-link>
+          </li>
+        </ul>
       </div>
-      <!-- Time to take a break -->
-      <div class="timer__countdown__task">
-        <h2 class="timer__countdown__task--txt">
-          Time to Take a break
-        </h2>
-        <div class="timer__countdown__task--tree">
-          <img
-            src="@/assets/images/break_tree.svg"
-            alt=""
-          >
-        </div>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ClockShortBreak',
+  name: '',
   data () {
     return {
-      taskName: this.$store.state.currentTask,
+      taskTitle: this.$store.state.currentTask,
       currentInterval: null,
-      isCountdown: false,
-      currentViews: 'ready',
+      isCountdowning: false,
+      currentViews: 'readyBreak',
       remainingMinutes: '05',
       remainingSeconds: '00',
-      totalSeconds: 300
+      totalSeconds: 5
     }
   },
   watch: {
@@ -135,8 +130,9 @@ export default {
       if (elapsedSeconds === 0) {
         return
       }
-      this.isCountdown = true
-      vm.currentInterval = setInterval(() => {
+
+      this.isCountdowning = true
+      this.currentInterval = setInterval(() => {
         elapsedSeconds = elapsedSeconds - 1
         vm.totalSeconds = elapsedSeconds
         vm.remainingMinutes = `0${Math.floor(elapsedSeconds / 60)}`.substr(-2)
@@ -144,18 +140,17 @@ export default {
       }, 1000)
     },
     pauseCountdown () {
-      this.isCountdown = false
+      this.isCountdowning = false
       clearInterval(this.currentInterval)
     },
     stopCountdown () {
-      this.isCountdown = false
-      this.currentViews = 'stop'
-      clearInterval(this.currentInterval)
+      this.pauseCountdown()
+      this.currentViews = 'stopBreak'
       this.remainingMinutes = '05'
       this.remainingSeconds = '00'
       this.totalSeconds = 300
     },
-    restartCountdown () {
+    goTask () {
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
     },
     newPomodoro () {
@@ -167,113 +162,99 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
-
-.break__stop {
+.stop-break {
   width: 410px;
   margin: 67px auto 0;
   text-align: center;
+  color: $secondary-color;
   &__title {
-    color: $secondary-color;
+    font-size: 24px;
+    font-style: italic;
     text-align: left;
-    h3 {
-      font-size: 24px;
-      font-style: italic;
-    }
-    h2 {
-      margin-top: 31px;
-      font-size: 32px;
-      font-weight: 700;
-    }
   }
-  &__restart {
-    position: relative;
+  &__task {
+    margin-top: 31px;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: left;
+  }
+  &__link {
     width: 100px;
     height: 100px;
+    position: relative;
     margin: 55px auto 0;
-    a {
+    background-color: $secondary-color;
+    border-radius: 50%;
+    transition: all .2s ease-in-out;
+    &:hover {
+      transform: scale(1.06);
+    }
+    &:after {
       display: inline-block;
-      width: 100%;
-      height: 100%;
-      background-color: $secondary-color;
-      border-radius: 50%;
-      transition: all .2s ease-in-out;
-      &:hover {
-        transform: scale(1.06);
-      }
-      &:after {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-        content: '';
-        display: inline-block;
-        border-width: 25px 30px;
-        border-style: solid;
-        border-color: transparent transparent transparent $primary-color;
-        border-radius: 4px;
-      }
+      position: absolute;
+      top: 50%;
+      right: 0;
+      content: '';
+      border-width: 25px 30px;
+      border-style: solid;
+      border-color: transparent transparent transparent $primary-color;
+      border-radius: 4px;
+      transform: translateY(-50%);
     }
   }
-  span {
-    display: inline-block;
-    margin-top: 52px;
+}
+
+.normal-text {
+  margin-top: 52px;
+  font-size: 20px;
+  color: $secondary-dark-color;
+}
+
+.action-list {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  &__item {
+    margin-right: 14px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &__link {
+    width: 145px;
+    position: relative;
+    padding-bottom: 4px;
     font-size: 20px;
     color: $secondary-dark-color;
-  }
-  &__btn {
-    display: flex;
-    justify-content: center;
-    margin-top: 28px;
-    li {
-      margin-right: 14px;
-      &:last-child {
-        margin-right: 0;
-      }
-      a {
-        width: 145px;
-        position: relative;
-        display: inline-block;
-        padding-bottom: 4px;
-        font-size: 20px;
-        color: $secondary-dark-color;
-        transition: all .3s;
-        &:after {
-          content: '';
-          position: absolute;
-          right: 51%;
-          bottom: -4px;
-          left: 51%;
-          width: 0;
-          height: 2px;
-          background-color: $secondary-dark-color;
-          transition: all .3s ease-out;
-        }
-        &:hover {
-          letter-spacing: 0.3px;
-          &:after {
-            right: 0;
-            left: 0;
-            width: 100%;
-          }
-        }
+    transition: all .3s;
+    &:after {
+      width: 0;
+      height: 2px;
+      content: '';
+      position: absolute;
+      right: 51%;
+      bottom: -4px;
+      left: 51%;
+      background-color: $secondary-dark-color;
+      transition: all .3s ease-out;
+    }
+    &:hover {
+      letter-spacing: 0.3px;
+      &:after {
+        right: 0;
+        left: 0;
+        width: 100%;
       }
     }
   }
 }
 
-.timer__countdown__task {
-  &--txt {
-    z-index: 2;
-  }
-  &--tree {
-    position: absolute;
-    bottom: 0;
-    z-index: 1;
-    img {
-      display: block;
-    }
+.break-icon {
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  &__img {
+    display: block;
   }
 }
-
 </style>

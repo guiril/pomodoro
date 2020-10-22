@@ -288,7 +288,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
+// @import '@/assets/scss/helpers/_variables.scss';
 
 .analytics-top {
   display: flex;

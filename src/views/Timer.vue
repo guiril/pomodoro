@@ -4,46 +4,35 @@
       <timer-ringtone />
       <layout-navbar />
     </header>
-    <main class="content__timer">
-      <ul class="timer-menu">
-        <li>
+    <main class="main">
+      <ul class="timer-nav">
+        <li class="timer-nav__item">
           <a
             href="#"
-            :class="{ 'active': currentViews === 'Pomodoro' }"
-            @click.prevent="controlViews('Pomodoro')"
-          >Pomodoro</a>
+            class="timer-nav__link"
+            :class="{ 'timer-nav__link--active': activeItem === 'Pomodoro' }"
+            @click.prevent="changeTimerViews('Pomodoro')"
+          >
+            Pomodoro
+          </a>
         </li>
-        <li>
+        <li class="timer-nav__item">
           <a
             href="#"
-            :class="{ 'active': currentViews === 'Short Break' }"
-            @click.prevent="controlViews('Short Break')"
-          >Short Break</a>
+            class="timer-nav__link"
+            :class="{ 'timer-nav__link--active': activeItem === 'Short Break' }"
+            @click.prevent="changeTimerViews('Short Break')"
+          >
+            Short Break
+          </a>
         </li>
       </ul>
-      <div v-if="currentViews === 'Pomodoro'">
-        <timer-ready
-          v-if="!isClockVisible"
-          :class="{
-            'animated': !isClockVisible,
-            'fadeIn': !isClockVisible
-          }"
-        />
-        <timer-countdown
-          v-if="isClockVisible"
-          :class="{
-            'animated': isClockVisible,
-            'fadeIn': isClockVisible
-          }"
-        />
-      </div>
-      <timer-short-break
-        v-if="currentViews === 'Short Break'"
-        :class="{
-          'animated': currentViews === 'Short Break',
-          'fadeIn': currentViews === 'Short Break'
-        }"
-      />
+      <template v-if="activeItem === 'Pomodoro'">
+        <component :is="pomodoroViews" />
+      </template>
+      <template v-if="activeItem === 'Short Break'">
+        <TimerShortBreak />
+      </template>
     </main>
   </div>
 </template>
@@ -64,74 +53,64 @@ export default {
     TimerCountdown,
     TimerShortBreak
   },
-  data () {
-    return {
-    }
-  },
   computed: {
-    currentViews () {
+    activeItem () {
       return this.$store.state.timerViews
     },
-    isClockVisible () {
-      return this.$store.state.isClockVisible
+    pomodoroViews () {
+      return this.$store.state.pomodoroViews
     }
   },
   methods: {
-    controlViews (views) {
-      this.$store.dispatch('changeTimerViews', views)
-    },
-    controlClockVisible () {
-      this.$store.dispatch('controlClockVisible', true)
+    changeTimerViews (view) {
+      this.$store.dispatch('changeTimerViews', view)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
-
-.content__timer {
+.main {
   margin-top: 68px;
 }
 
-.timer-menu {
+.timer-nav {
   display: flex;
   justify-content: flex-start;
   margin-left: 155px;
-  li {
+  &__item {
     width: 122px;
     margin-right: 66px;
     &:last-child {
       margin-right: 0;
     }
-    a {
-      position: relative;
-      display: block;
-      padding: 9px 4px;
-      font-size: 20px;
-      text-align: center;
-      color: $mute-color;
-      transition: all .2s ease-out;
+  }
+  &__link {
+    position: relative;
+    display: block;
+    padding: 9px 4px;
+    font-size: 20px;
+    text-align: center;
+    color: $mute-color;
+    transition: all .2s ease-out;
+    &:after {
+      width: 0;
+      height: 4px;
+      content: '';
+      position: absolute;
+      right: 51%;
+      bottom: -4px;
+      left: 51%;
+      background-color: $secondary-color;
+      transition: all .3s ease-out;
+    }
+    &:hover, &--active {
+      font-weight: 700;
+      color: $secondary-color;
       &:after {
-        content: '';
-        position: absolute;
-        right: 51%;
-        bottom: -4px;
-        left: 51%;
-        width: 0;
-        height: 4px;
-        background-color: $secondary-color;
-        transition: all .3s ease-out;
-      }
-      &:hover,
-      &.active {
-        font-weight: 700;
-        color: $secondary-color;
-        &:after {
-          right: 0;
-          left: 0;
-          width: 100%;
-        }
+        width: 100%;
+        right: 0;
+        left: 0;
       }
     }
   }

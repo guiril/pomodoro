@@ -5,8 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    isClockVisible: false,
     timerViews: 'Pomodoro',
+    pomodoroViews: 'TimerReady',
+    isClockVisible: false,
     currentTask: '“Unknown task”',
     isAudioOn: true,
     isPlayAudio: false,
@@ -56,8 +57,11 @@ export default new Vuex.Store({
     ]
   },
   mutations: {
-    CHANGETIMERVIEWS (state, status) {
-      state.timerViews = status
+    changeTimerViews (state, view) {
+      state.timerViews = view
+    },
+    changePomodoroViews (state, view) {
+      state.pomodoroViews = view
     },
     CONTROLCLOCKVISIBLE (state, status) {
       state.isClockVisible = status
@@ -91,7 +95,7 @@ export default new Vuex.Store({
       state.currentTask = '“Unknown task”'
       state.isClockVisible = false
     },
-    ADDPOMODORONUM (state, status) {
+    addPomodoroNum (state, status) {
       if (state.currentTask === '“Unknown task”') {
         return
       }
@@ -103,8 +107,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    changeTimerViews (context, status) {
-      context.commit('CHANGETIMERVIEWS', status)
+    changeTimerViews (context, view) {
+      context.commit('changeTimerViews', view)
+    },
+    changePomodoroViews (context, view) {
+      context.commit('changePomodoroViews', view)
     },
     controlClockVisible (context, status) {
       context.commit('CONTROLCLOCKVISIBLE', status)
@@ -128,7 +135,7 @@ export default new Vuex.Store({
       context.commit('NEWPOMODORO', status)
     },
     addPomodoroNum (context, status) {
-      context.commit('ADDPOMODORONUM', status)
+      context.commit('addPomodoroNum', status)
     }
   }
 })

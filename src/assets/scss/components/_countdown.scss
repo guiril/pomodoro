@@ -1,0 +1,77 @@
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 68px;
+}
+
+.countdown {
+  min-width: 360px;
+  margin-right: 93px;
+  &__number {
+    font-size: 140px;
+    font-weight: 700;
+    color: $secondary-color;
+  }
+  &__control {
+    display: flex;
+    justify-content: center;
+    margin-top: 145px;
+  }
+  &__play {
+    width: 50px;
+    height: 50px;
+  }
+  .play-icon {
+    border-width: 25px 30px;
+    border-style: solid;
+    border-color: transparent transparent transparent $secondary-color;
+    border-radius: 4px;
+    transition: all .3s;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  &__pause {
+    margin-right: 122px;
+    transition: all .3s;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  .pause-icon {
+    width: 16px;
+    height: 50px;
+    background-color: $secondary-color;
+    border-radius: 4px;
+    margin-right: 18px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  .stop-icon {
+    width: 50px;
+    height: 50px;
+    background-color: $secondary-color;
+    border-radius: 4px;
+    transition: all .3s;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  &__title {
+    width: 346px;
+    height: 106px;
+    margin-top: 30px;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 37px;
+    color: $secondary-color;
+    word-wrap: break-word;
+  }
+}
