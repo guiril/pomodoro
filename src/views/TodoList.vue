@@ -7,26 +7,28 @@
       <h2 class="title">
         Todo list
       </h2>
-      <div class="todo-container">
-        <div class="todo-container-list">
-          <ul class="todo-menu">
-            <li>
+      <div class="container">
+        <div class="list">
+          <ul class="todo-nav">
+            <li class="todo-nav__item">
               <a
                 href="#"
-                :class="{
-                  'active': menu === 'Todo'
-                }"
+                class="todo-nav__link"
+                :class="{ 'todo-nav__link--active': menu === 'Todo' }"
                 @click.prevent="menu = 'Todo'"
-              >Todo</a>
+              >
+                Todo
+              </a>
             </li>
-            <li>
+            <li class="todo-nav__item">
               <a
                 href="#"
-                :class="{
-                  'active': menu === 'Done'
-                }"
+                class="todo-nav__link"
+                :class="{ 'todo-nav__link--active': menu === 'Done' }"
                 @click.prevent="menu = 'Done'"
-              >Done</a>
+              >
+                Done
+              </a>
             </li>
           </ul>
           <todo-list-processing v-if="menu === 'Todo'" />
@@ -40,9 +42,9 @@
 
 <script>
 import LayoutNavbar from '@/components/LayoutNavbar'
-import TodoListProcessing from '@/components/todolist/TodoListProcessing'
-import TodoListDone from '@/components/todolist/TodoListDone'
-import TodoListAdd from '@/components/todolist/TodoListAdd'
+import TodoListProcessing from '@/components/todo-list/TodoListProcessing'
+import TodoListDone from '@/components/todo-list/TodoListDone'
+import TodoListAdd from '@/components/todo-list/TodoListAdd'
 
 export default {
   name: 'TodoList',
@@ -72,61 +74,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/scss/helpers/_variables.scss';
-
 .title {
   margin-bottom: 35px;
 }
 
-.todo-menu {
+.container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.list {
+  width: 495px;
+}
+
+.todo-nav {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 47px;
-  li {
+  &__item {
     width: 70px;
     margin-right: 15px;
     &:last-child {
       margin-right: 0;
     }
-    a {
-      position: relative;
-      display: block;
-      padding-top: 9px;
-      padding-bottom: 9px;
-      font-size: 20px;
-      text-align: center;
-      color: $mute-color;
-      transition: all .2s ease-out;
+  }
+  &__link {
+    position: relative;
+    display: block;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    font-size: 20px;
+    text-align: center;
+    color: $mute-color;
+    transition: all .2s ease-out;
+    &:after {
+      content: '';
+      position: absolute;
+      right: 51%;
+      bottom: -4px;
+      left: 51%;
+      width: 0;
+      height: 4px;
+      background-color: $secondary-color;
+      transition: all .3s ease-out;
+    }
+    &:hover, &--active {
+      font-weight: 700;
+      color: $secondary-color;
       &:after {
-        content: '';
-        position: absolute;
-        right: 51%;
-        bottom: -4px;
-        left: 51%;
-        width: 0;
-        height: 4px;
-        background-color: $secondary-color;
-        transition: all .3s ease-out;
-      }
-      &:hover,
-      &.active {
-        font-weight: 700;
-        color: $secondary-color;
-        &:after {
-          right: 0;
-          left: 0;
-          width: 100%;
-        }
+        width: 100%;
+        right: 0;
+        left: 0;
       }
     }
-  }
-}
-
-.todo-container {
-  display: flex;
-  justify-content: flex-start;
-  &-list {
-    width: 495px;
   }
 }
 </style>

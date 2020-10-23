@@ -1,14 +1,11 @@
 <template>
-  <div
-    class="container"
-    :class="{ 'animated fadeIn': pomodoroViews === 'TimerReady' }"
-  >
+  <div class="container">
     <ul class="timer-btn">
       <li class="timer-btn__item">
         <a
           href="#"
           class="timer-btn__link"
-          @click.prevent="getTimerCountdown"
+          @click.prevent="getPomodoroCount"
         >
           Start pomodoro
         </a>
@@ -32,14 +29,9 @@
 
 <script>
 export default {
-  computed: {
-    pomodoroViews () {
-      return this.$store.state.pomodoroViews
-    }
-  },
   methods: {
-    getTimerCountdown () {
-      this.$store.dispatch('changePomodoroViews', 'TimerCountdown')
+    getPomodoroCount () {
+      this.$emit('getPomodoroCount')
     }
   }
 }

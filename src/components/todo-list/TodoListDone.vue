@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import TodoListNone from '@/components/todolist/TodoListNone'
+import TodoListNone from '@/components/todo-list/TodoListNone'
 
 export default {
   name: 'TodoListDone',

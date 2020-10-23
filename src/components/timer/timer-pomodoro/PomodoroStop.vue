@@ -55,7 +55,6 @@ export default {
     },
     newPomodoro () {
       this.$router.push('/')
-      this.$store.dispatch('controlClockVisible', false)
     }
   }
 }

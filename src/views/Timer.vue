@@ -27,12 +27,8 @@
           </a>
         </li>
       </ul>
-      <template v-if="activeItem === 'Pomodoro'">
-        <component :is="pomodoroViews" />
-      </template>
-      <template v-if="activeItem === 'Short Break'">
-        <TimerShortBreak />
-      </template>
+      <timer-pomodoro v-if="activeItem === 'Pomodoro'" />
+      <timer-break v-if="activeItem === 'Short Break'" />
     </main>
   </div>
 </template>
@@ -40,25 +36,20 @@
 <script>
 import LayoutNavbar from '@/components/LayoutNavbar'
 import TimerRingtone from '@/components/timer/TimerRingtone'
-import TimerReady from '@/components/timer/TimerReady'
-import TimerCountdown from '@/components/timer/TimerCountdown'
-import TimerShortBreak from '@/components/timer/TimerShortBreak'
+import TimerPomodoro from '@/components/timer/TimerPomodoro'
+import TimerBreak from '@/components/timer/TimerBreak'
 
 export default {
   name: 'Home',
   components: {
     TimerRingtone,
     LayoutNavbar,
-    TimerReady,
-    TimerCountdown,
-    TimerShortBreak
+    TimerPomodoro,
+    TimerBreak
   },
   computed: {
     activeItem () {
       return this.$store.state.timerViews
-    },
-    pomodoroViews () {
-      return this.$store.state.pomodoroViews
     }
   },
   methods: {

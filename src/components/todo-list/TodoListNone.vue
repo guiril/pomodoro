@@ -17,8 +17,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
-
 .todo-none {
   margin-top: 133px;
   margin-right: 104px;

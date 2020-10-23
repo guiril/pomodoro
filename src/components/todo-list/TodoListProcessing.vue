@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import TodoListNone from '@/components/todolist/TodoListNone'
+import TodoListNone from '@/components/todo-list/TodoListNone'
 
 export default {
   name: 'TodoListProcessing',
@@ -106,7 +106,6 @@ export default {
     goToDoTask (item) {
       this.$store.dispatch('goToDoTask', item)
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
-      this.$store.dispatch('controlClockVisible', true)
       this.$router.push('/')
     }
   }

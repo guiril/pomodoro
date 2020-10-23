@@ -139,7 +139,7 @@ export default {
       clearInterval(this.currentInterval)
     },
     stopCountdown () {
-      this.$emit('stop-countdown')
+      this.$emit('stopCountdown')
       this.isStopCountdowning = true
       this.pauseCountdown()
       this.resetNumber()
