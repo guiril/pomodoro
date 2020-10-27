@@ -47,7 +47,6 @@ import TodoListDone from '@/components/todo-list/TodoListDone'
 import TodoListAdd from '@/components/todo-list/TodoListAdd'
 
 export default {
-  name: 'TodoList',
   components: {
     LayoutNavbar,
     TodoListProcessing,
@@ -57,17 +56,6 @@ export default {
   data () {
     return {
       menu: 'Todo'
-    }
-  },
-  computed: {
-    doneTodoList () {
-      const data = this.$store.state.todoList
-      const newData = data.filter((el) => {
-        if (el.isCompleted) {
-          return el
-        }
-      })
-      return newData.reverse()
     }
   }
 }

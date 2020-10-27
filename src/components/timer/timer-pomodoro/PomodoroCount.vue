@@ -70,7 +70,7 @@
     </div>
     <div class="task">
       <h2 class="task__title">
-        {{ taskTitle }}
+        {{ currentTodo.title }}
       </h2>
       <div
         v-if="!isTimesUp"
@@ -92,7 +92,7 @@ export default {
       remainingMinutes: '25',
       remainingSeconds: '00',
       totalSeconds: 5,
-      taskTitle: this.$store.state.currentTask,
+      currentTodo: this.$store.state.currentTodo,
       currentInterval: null,
       isCountdowning: false,
       isStopCountdowning: false,
@@ -126,6 +126,10 @@ export default {
         return
       }
 
+      if (!this.$store.getters.checkTodayTodoList) {
+        this.$store.dispatch('addNewTodoItem', this.currentTodo.title)
+      }
+
       this.isCountdowning = true
       this.currentInterval = setInterval(() => {
         elapsedSeconds = elapsedSeconds - 1
@@ -151,7 +155,7 @@ export default {
     timesUp () {
       this.isTimesUp = true
       this.pauseCountdown()
-      this.$store.dispatch('addPomodoroNum')
+      this.$store.dispatch('addPomodoroAmount')
     }
   }
 }

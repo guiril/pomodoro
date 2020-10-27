@@ -5,66 +5,66 @@
       <li
         v-for="item in todoList"
         :key="item.id"
-        class="animated fadeInLeft"
+        class="todo-list__item animated fadeInLeft"
       >
-        <a
-          href="#"
-          class="todo-btn-done"
-          @click.prevent="completeTask(item.id)"
+        <button
+          class="todo-list__btn"
+          @click="completeTask(item.id)"
         />
-        <div class="todo-name">
-          <p>{{ item.name }}</p>
-          <ul class="todo-pomodoro-num">
+        <div class="todo-list__center">
+          <p class="todo-list__txt todo-list__title">
+            {{ item.title }}
+          </p>
+          <ul class="pomodoro-amount">
             <li
-              v-for="(num, index) in item.pomodoroNum"
+              v-for="(num, index) in item.amount"
               :key="index"
+              class="pomodoro-amount__item"
             />
           </ul>
         </div>
-        <ul class="todo-btn-list">
-          <li>
-            <a
-              href="#"
+        <ul class="todo-actions">
+          <li class="todo-actions__item">
+            <button
+              class="todo-actions__btn todo-actions__btn--del"
               @click.prevent="removeTask(item.id)"
             >
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_remove.svg"
-                alt=""
+                alt="Remove task"
               >
-            </a>
+            </button>
           </li>
-          <li>
-            <a
-              href="#"
-              class="animated-top"
-            >
+          <li class="todo-actions__item">
+            <button class="todo-actions__btn todo-actions__btn--up">
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_up.svg"
-                alt=""
+                alt="Move up"
               >
-            </a>
+            </button>
           </li>
-          <li>
-            <a
-              href="#"
-              class="animated-top"
-            >
+          <li class="todo-actions__item">
+            <button class="todo-actions__btn todo-actions__btn--down">
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_down.svg"
-                alt=""
+                alt="Move down"
               >
-            </a>
+            </button>
           </li>
-          <li>
-            <a
-              href="#"
-              @click.prevent="goToDoTask(item.name)"
+          <li class="todo-actions__item">
+            <button
+              class="todo-actions__btn todo-actions__btn--start"
+              @click.prevent="startTask(item)"
             >
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_start.svg"
-                alt=""
+                alt="Start Task"
               >
-            </a>
+            </button>
           </li>
         </ul>
       </li>
@@ -76,7 +76,6 @@
 import TodoListNone from '@/components/todo-list/TodoListNone'
 
 export default {
-  name: 'TodoListProcessing',
   components: {
     TodoListNone
   },
@@ -87,143 +86,27 @@ export default {
   },
   computed: {
     todoList () {
-      const data = this.$store.state.todoList
-      const newData = data.filter((el) => {
-        if (!el.isCompleted) {
-          return el
-        }
-      })
-      return newData.reverse()
+      // const data =
+      // const newData = data.filter((el) => {
+      //   if (!el.isCompleted) {
+      //     return el
+      //   }
+      // })
+      return this.$store.getters.reverseTodoListProcessing
     }
   },
   methods: {
-    removeTask (item) {
-      this.$store.dispatch('removedTask', item)
+    completeTask (id) {
+      this.$store.dispatch('completeTask', id)
     },
-    completeTask (item) {
-      this.$store.dispatch('completeTask', item)
+    removeTask (id) {
+      this.$store.dispatch('removedTask', id)
     },
-    goToDoTask (item) {
-      this.$store.dispatch('goToDoTask', item)
-      this.$store.dispatch('changeTimerViews', 'Pomodoro')
+    startTask (item) {
+      this.$store.dispatch('startTask', item)
+      this.$store.dispatch('changePomodoroViews', 'PomodoroCount')
       this.$router.push('/')
     }
   }
 }
 </script>
-
-<style lang="scss">
-@import '@/assets/scss/helpers/_variables.scss';
-
-@keyframes animatedUp {
-  0% {
-    transform: translateY(-5px);
-  }
-  33% {
-    transform: translateY(0px);
-  }
-  66% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-@keyframes animatedRight {
-  0% {
-    transform: translateX(5px);
-  }
-  33% {
-    transform: translateX(0px);
-  }
-  66% {
-    transform: translateX(5px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
-}
-
-.todo-list {
-  > li {
-    display: flex;
-    justify-content: flex-start;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    align-items: center;
-    border-bottom: 1px solid $mute-color;
-    &:last-child {
-      border-bottom: none;
-    }
-    .todo-btn-done {
-      display: inline-block;
-      width: 19px;
-      height: 19px;
-      margin-right: 15px;
-      border-radius: 50%;
-      border: 1px solid $secondary-color;
-      transition: all .2s;
-      &:hover {
-        background-color: $secondary-color;
-      }
-    }
-    .todo-name {
-      width: 270px;
-      margin-right: 80px;
-      font-size: 20px;
-      color: $secondary-color;
-      p {
-        word-wrap: break-word;
-      }
-    }
-  }
-}
-
-.todo-pomodoro-num {
-  display: flex;
-  margin-top: 7px;
-  li {
-    width: 10px;
-    height: 10px;
-    margin-right: 5px;
-    background-color: $secondary-dark-color;
-    border-radius: 50%;
-  }
-}
-
-.todo-btn-list {
-  display: flex;
-  justify-content: flex-start;
-  li {
-    margin-right: 20px;
-    a {
-      display: block;
-      img {
-        transition: all .3s ease-in;
-      }
-      &.animated-top:hover {
-        img {
-          animation: animatedUp .8s ease-in .1s;
-        }
-      }
-    }
-    &:first-child {
-      a:hover {
-        img {
-          transform: scale(1.1);
-        }
-      }
-    }
-    &:last-child {
-      margin-right: 0;
-      a:hover {
-        img {
-          animation: animatedRight .8s ease-in .1s;
-        }
-      }
-    }
-  }
-}
-
-</style>

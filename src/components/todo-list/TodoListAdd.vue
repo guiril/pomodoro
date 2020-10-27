@@ -33,19 +33,7 @@ export default {
     },
     addNewTodo () {
       if (this.todolistStr) {
-        const time = new Date()
-        const year = time.getFullYear()
-        const month = `0${time.getMonth() + 1}`.substr(-2)
-        const date = `0${time.getDate()}`.substr(-2)
-        const timestamp = Math.floor(time / 1000)
-        const data = {
-          name: this.todolistStr,
-          id: timestamp,
-          date: `${year}-${month}-${date}`,
-          pomodoroNum: 0,
-          isCompleted: false
-        }
-        this.$store.dispatch('addNewTodo', data)
+        this.$store.dispatch('addNewTodoItem', this.todolistStr)
         this.todolistStr = ''
         // this.menu = 'Todo'
       }

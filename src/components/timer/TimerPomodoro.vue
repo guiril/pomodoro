@@ -20,17 +20,17 @@ export default {
     PomodoroCount,
     PomodoroStop
   },
-  data () {
-    return {
-      pomodoroViews: 'PomodoroInit'
+  computed: {
+    pomodoroViews () {
+      return this.$store.state.pomodoroViews
     }
   },
   methods: {
     getPomodoroCount () {
-      this.pomodoroViews = 'PomodoroCount'
+      this.$store.dispatch('changePomodoroViews', 'PomodoroCount')
     },
     getPomodoroStop () {
-      this.pomodoroViews = 'PomodoroStop'
+      this.$store.dispatch('changePomodoroViews', 'PomodoroStop')
     }
   }
 }
