@@ -1,6 +1,6 @@
 <template>
   <div>
-    <todo-list-none v-if="todoList.length === 0" />
+    <todo-list-empty v-if="todoList.length === 0" />
     <ul class="todo-list">
       <li
         v-for="item in todoList"
@@ -28,12 +28,12 @@
 </template>
 
 <script>
-import TodoListNone from '@/components/todo-list/TodoListNone'
+import TodoListEmpty from '@/components/todo-list/TodoListEmpty'
 
 export default {
   name: 'TodoListDone',
   components: {
-    TodoListNone
+    TodoListEmpty
   },
   data () {
     return {}

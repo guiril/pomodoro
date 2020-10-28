@@ -1,32 +1,33 @@
 <template>
-  <div>
-    <div class="todo-none animated fadeIn">
-      <h2>Let’s start something fun</h2>
-      <img
-        src="@/assets/images/todo_fun.svg"
-        alt=""
-      >
-    </div>
+  <div class="empty animated fadeIn">
+    <h2 class="empty__title">
+      Let’s start something fun
+    </h2>
+    <img
+      class="empty__img"
+      src="@/assets/images/todo_fun.svg"
+      alt=""
+    >
   </div>
 </template>
 
 <script>
 export default {
-  name: 'TodoListNone'
+
 }
 </script>
 
 <style lang="scss" scoped>
-.todo-none {
+.empty {
   margin-top: 133px;
   margin-right: 104px;
   text-align: center;
-  h2 {
+  &__title {
     margin-bottom: 60px;
     font-size: 32px;
     color: $mute-color;
   }
-  img {
+  &__img {
     width: 210px;
   }
 }

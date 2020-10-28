@@ -52,18 +52,21 @@ export default new Vuex.Store({
       state.todoListProcessing.push(todo)
     },
     addPomodoroAmount (state) {
+      state.currentTodo.amount += 1
+      state.todoListProcessing.forEach((el) => {
 
-    },
-    addPomodoroNum (state) {
-      if (state.currentTask === '“Unknown task”') {
-        return
-      }
-      state.todoList.forEach((el) => {
-        if (state.currentTask === el.name) {
-          el.pomodoroNum = el.pomodoroNum + 1
-        }
       })
     },
+    // addPomodoroNum (state) {
+    //   if (state.currentTask === '“Unknown task”') {
+    //     return
+    //   }
+    //   state.todoList.forEach((el) => {
+    //     if (state.currentTask === el.name) {
+    //       el.pomodoroNum = el.pomodoroNum + 1
+    //     }
+    //   })
+    // },
     completeTask (state, id) {
       state.todoListProcessing.forEach((el, index) => {
         if (el.id === id) {
@@ -109,6 +112,10 @@ export default new Vuex.Store({
         amount: 0
       }
       commit('addNewTodoItem', todo)
+
+      if (todo.title === '“Unknown task”') {
+        commit('startTask', todo)
+      }
     },
     addPomodoroAmount ({ commit }) {
       commit('addPomodoroAmount')
