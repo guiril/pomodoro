@@ -5,18 +5,21 @@
       <li
         v-for="item in doneTodoList"
         :key="item.id"
-        class="animated fadeInLeft"
+        class="todo-list__item animated fadeInLeft"
       >
-        <div class="todo-name">
-          {{ item.name }}
-          <ul class="todo-pomodoro-num">
+        <div class="todo-list__body">
+          <p class="todo-list__title">
+            {{ item.title }}
+          </p>
+          <ul class="todo-list-number">
             <li
               v-for="(num, index) in item.pomodoroNum"
               :key="index"
+              class="todo-list-number__item"
             />
           </ul>
         </div>
-        <p class="todo-date">
+        <p class="todo-list__date">
           {{ item.date }}
         </p>
       </li>
@@ -37,23 +40,11 @@ export default {
   },
   computed: {
     doneTodoList () {
-      const data = this.$store.state.todoList
-      const newData = data.filter((el) => {
-        if (el.isCompleted) {
-          return el
-        }
-      })
-      return newData.reverse()
+      return this.$store.getters.todoListDone
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
-
-.todo-date {
-  font-size: 20px;
-  color: $secondary-color;
-}
 </style>

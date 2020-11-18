@@ -6,87 +6,62 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     timerViews: 'Pomodoro',
-    currentTask: '“Unknown task”',
+    pomodoroViews: 'PomodoroInit',
+    currentTask: {
+      title: '“Unknown task”',
+      id: null,
+      date: null,
+      pomodoroNum: null
+    },
     isAudioOn: true,
     isPlayAudio: false,
-    todoList: [
-      {
-        name: '吃飯',
-        id: 'jkloi',
-        date: '2019-08-02',
-        pomodoroNum: 3,
-        isCompleted: true
-      },
-      {
-        name: '睡覺',
-        id: 'rtyuj',
-        date: '2019-08-02',
-        pomodoroNum: 2,
-        isCompleted: true
-      },
-      {
-        name: '打東東',
-        id: 'nmkjh',
-        date: '2019-08-02',
-        pomodoroNum: 1,
-        isCompleted: true
-      },
-      {
-        name: '吃飯',
-        id: 'gfere',
-        date: '2019-08-02',
-        pomodoroNum: 4,
-        isCompleted: false
-      },
-      {
-        name: '睡覺',
-        id: 'reretg',
-        date: '2019-08-02',
-        pomodoroNum: 3,
-        isCompleted: false
-      },
-      {
-        name: '打東東',
-        id: 'rhghy',
-        date: '2019-08-02',
-        pomodoroNum: 2,
-        isCompleted: false
-      }
-    ]
+    todoList: []
+  },
+  getters: {
+    todoListProcessing: (state) => {
+      // 進行中的任務
+      let ary = []
+      state.todoList.forEach((el) => {
+        if (!el.isCompleted) {
+          ary.unshift(el)
+        }
+      })
+      return ary
+    },
+    todoListDone: (state) => {
+      // 已完成的任務
+      let ary = []
+      state.todoList.forEach((el) => {
+        if (el.isCompleted) {
+          ary.unshift(el)
+        }
+      })
+      return ary
+    }
   },
   mutations: {
     changeTimerViews (state, view) {
+      // 'Pomodoro' or 'Short Break'
       state.timerViews = view
     },
-    CONTROLAUDIOSWITCH (state, status) {
-      state.isAudioOn = !state.isAudioOn
+    changePomodoroViews (state, view) {
+      // 'PomodoroInit', 'PomodoroCount', 'PomodoroStop'
+      state.pomodoroViews = view
     },
-    ADDTASK (state, status) {
-      state.todoList.push(status)
+    addNewTodo (state, todo) {
+      state.todoList.push(todo) // 新增任務至 todoList 陣列
     },
-    REMOVETASK (state, status) {
-      let key
-      state.todoList.forEach((el, index) => {
-        if (el.id === status) {
-          key = index
-        }
+    removedTask (state, todo) {
+      // 找出 todo 在 todoList 的索引值
+      const index = state.todoList.findIndex((el) => {
+        return el === todo
       })
-      state.todoList.splice(key, 1)
+      state.todoList.splice(index, 1) // 從 todoList 刪除任務
     },
-    COMPLETETASK (state, status) {
-      state.todoList.forEach((el, index) => {
-        if (el.id === status) {
-          el.isCompleted = true
-        }
-      })
+    doTask (state, todo) {
+      state.currentTask = todo
     },
-    GOTODOTASK (state, status) {
-      state.currentTask = status
-    },
-    NEWPOMODORO (state, status) {
-      state.currentTask = '“Unknown task”'
-    },
-    addPomodoroNum (state, status) {
+    addPomodoroNum (state) {
       if (state.currentTask === '“Unknown task”') {
         return
       }
@@ -95,32 +70,39 @@ export default new Vuex.Store({
           el.pomodoroNum = el.pomodoroNum + 1
         }
       })
+    },
+    completeTask (state, todo) {
+      // 改變 isCompleted 的值
+      state.todoList.forEach((el) => {
+        if (todo.id === el.id) {
+          el.isCompleted = true
+        }
+      })
     }
   },
   actions: {
-    changeTimerViews (context, view) {
-      context.commit('changeTimerViews', view)
+    changeTimerViews ({ commit }, view) {
+      commit('changeTimerViews', view)
     },
-    controlAudioSwitch (context, status) {
-      context.commit('CONTROLAUDIOSWITCH', status)
+    changePomodoroViews ({ commit }, view) {
+      commit('changePomodoroViews', view)
     },
-    addNewTodo (context, status) {
-      context.commit('ADDTASK', status)
+    addNewTodo ({ commit }, todo) {
+      commit('addNewTodo', todo)
     },
-    removedTask (context, status) {
-      context.commit('REMOVETASK', status)
+    removedTask ({ commit }, todo) {
+      commit('removedTask', todo)
     },
-    completeTask (context, status) {
-      context.commit('COMPLETETASK', status)
+    doTask ({ commit }, todo) {
+      commit('doTask', todo)
+      commit('changePomodoroViews', 'PomodoroCount')
     },
-    goToDoTask (context, status) {
-      context.commit('GOTODOTASK', status)
+    addPomodoroNum ({ commit }) {
+      commit('addPomodoroNum')
     },
-    newPomodoro (context, status) {
-      context.commit('NEWPOMODORO', status)
-    },
-    addPomodoroNum (context, status) {
-      context.commit('addPomodoroNum', status)
+    completeTask ({ commit }, todo) {
+      commit('completeTask', todo)
+      // commit('removedTask', todo)
     }
   }
 })

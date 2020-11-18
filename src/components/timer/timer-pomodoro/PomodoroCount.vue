@@ -92,7 +92,7 @@ export default {
       remainingMinutes: '25',
       remainingSeconds: '00',
       totalSeconds: 5,
-      taskTitle: this.$store.state.currentTask,
+      taskTitle: this.$store.state.currentTask.title,
       currentInterval: null,
       isCountdowning: false,
       isStopCountdowning: false,

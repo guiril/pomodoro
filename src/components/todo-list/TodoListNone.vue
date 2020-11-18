@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="todo-none animated fadeIn">
-      <h2>Let’s start something fun</h2>
+    <div class="todo-list-none animated fadeIn">
+      <h2 class="todo-list-none__title">
+        Let’s start something fun
+      </h2>
       <img
+        class="todo-list-none__img"
         src="@/assets/images/todo_fun.svg"
         alt=""
       >
@@ -17,16 +20,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.todo-none {
+.todo-list-none {
   margin-top: 133px;
   margin-right: 104px;
   text-align: center;
-  h2 {
+  &__title {
     margin-bottom: 60px;
     font-size: 32px;
     color: $mute-color;
   }
-  img {
+  &__img {
     width: 210px;
   }
 }

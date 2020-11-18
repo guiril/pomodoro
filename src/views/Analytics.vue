@@ -3,116 +3,91 @@
     <header class="header">
       <layout-navbar />
     </header>
-    <main class="analytics-wrap">
-      <div class="analytics-top">
-        <h2 class="analytics-top-title title">
-          Analytics
-        </h2>
-        <ul class="analytics-top-menu">
-          <li>
-            <a
-              href="#"
-              :class="{
-                'active': menu === 'Daily'
-              }"
-              @click.prevent="menu = 'Daily'"
-            >Daily</a>
+    <div class="u-d-flex u-justify-flex-start u-align-flex-end">
+      <h2 class="title">
+        Analytics
+      </h2>
+      <nav class="nav">
+        <ul class="nav-list">
+          <Menu
+            v-for="(item, index) in menuList"
+            :key="index"
+            :title="item"
+            :class="{ 'nav-list__item--active': activeMenu === item }"
+            @changeActiveMenu="changeActiveMenu(item)"
+          />
+        </ul>
+      </nav>
+    </div>
+    <main class="main u-d-flex u-justify-flex-start">
+      <div class="analytics-txt">
+        <date-btn
+          v-if="activeMenu === 'Daily'"
+          :date="dailyDate"
+          @changeNumber="changeDaysFunc"
+        />
+        <date-btn
+          v-if="activeMenu === 'Weekly'"
+          :date="weeklyDate"
+          @changeNumber="changeWeekFunc"
+        />
+        <!-- 任務列表 -->
+        <ul class="analytics-total">
+          <li class="analytics-total__item">
+            Pomodoros : <span class="u-font-bold">{{ countDailyData.pomodoroNum }}</span>
           </li>
-          <li>
-            <a
-              href="#"
-              :class="{
-                'active': menu === 'Weekly'
-              }"
-              @click.prevent="menu = 'Weekly'"
-            >Weekly</a>
+          <li class="analytics-total__item">
+            Tasks : <span class="u-font-bold">{{ countDailyData.tasksNum }}</span>
+          </li>
+          <li class="analytics-total__item">
+            Completed : <span class="u-font-bold">{{ countDailyData.completedNum }}</span>
+          </li>
+          <li class="analytics-total__item">
+            Focus time : <span class="u-font-bold">{{ countDailyData.focusTime }}</span> mins
           </li>
         </ul>
       </div>
-      <div class="analytics-container">
-        <div class="analytics-txt">
-          <div
-            v-if="menu === 'Daily'"
-            class="analytics-range"
+      <div class="analytics-chart">
+        <!-- 週圖表 -->
+        <chart
+          v-if="activeMenu === 'Weekly'"
+          :chart-data="datacollection"
+          :options="chartOptions"
+          :width="chartWidth"
+          :height="chartHeight"
+          class="animated fadeIn"
+        />
+        <!-- 日統計 -->
+        <ul
+          v-if="activeMenu === 'Daily'"
+          class="analytics-todo-list animated fadeIn"
+        >
+          <li
+            v-for="item in dailyData"
+            :key="item.id"
           >
-            <a
-              href="#"
-              class="analytics-range-btn prev"
-              @click.prevent="previousDay"
-            />
-            <span class="analytics-range-txt">{{ dailyDate }}</span>
-            <a
-              href="#"
-              class="analytics-range-btn next"
-              @click.prevent="nextDay"
-            />
-          </div>
-          <div
-            v-if="menu === 'Weekly'"
-            class="analytics-range"
-          >
-            <a
-              href="#"
-              class="analytics-range-btn prev"
-              @click.prevent="previousDay"
-            />
-            <span class="analytics-range-txt">{{ weeklyDate }}</span>
-            <a
-              href="#"
-              class="analytics-range-btn next"
-              @click.prevent="nextDay"
-            />
-          </div>
-          <ul class="analytics-statistic">
-            <li>Pomodoros : <span>{{ countDailyData.pomodoroNum }}</span></li>
-            <li>Tasks : <span>{{ countDailyData.tasksNum }}</span></li>
-            <li>Completed : <span>{{ countDailyData.completedNum }}</span></li>
-            <li>Focus time : <span>{{ countDailyData.focusTime }} mins</span></li>
-          </ul>
-        </div>
-        <!-- daily todolist start -->
-        <div class="analytics-chart">
-          <div
-            v-if="menu === 'Weekly'"
-            class="analytics-todo-chart animated fadeIn"
-          >
-            <!-- <chart :chart-data="datacollection" /> -->
-            <!-- <button @click="fillData()">
-              Randomize
-            </button> -->
-            <!-- <canvas ref="chart" /> -->
-          </div>
-          <ul
-            v-if="menu === 'Daily'"
-            class="analytics-todo-list animated fadeIn"
-          >
-            <li
-              v-for="item in dailyData"
-              :key="item.id"
-            >
-              <div class="todo-name">
-                <p>
-                  {{ item.name }}
-                  <img
-                    v-if="item.isCompleted"
-                    class="todo-completed"
-                    src="../assets/images/analy_completed.svg"
-                    alt=""
-                  >
-                </p>
-                <ul class="todo-pomodoro">
-                  <li
-                    v-for="number in item.pomodoroNum"
-                    :key="number"
-                  />
-                  <li />
-                </ul>
-              </div>
-              <span class="todo-spend-time">{{ (item.pomodoroNum + 1) * 25 }} mins</span>
-            </li>
-          </ul>
-        </div>
-        <!-- daily todolist end -->
+            <div class="todo-name">
+              <p>
+                {{ item.title }}
+                <img
+                  v-if="item.isCompleted"
+                  class="todo-completed"
+                  src="../assets/images/analy_completed.svg"
+                  alt=""
+                >
+              </p>
+              <ul class="todo-pomodoro">
+                <li
+                  v-for="number in item.pomodoroNum"
+                  :key="number"
+                />
+              </ul>
+            </div>
+            <span class="todo-spend-time">
+              {{ (item.pomodoroNum) * 25 }} mins
+            </span>
+          </li>
+        </ul>
       </div>
     </main>
   </div>
@@ -120,24 +95,75 @@
 
 <script>
 import LayoutNavbar from '@/components/LayoutNavbar'
-// import chart from '@/chart.js'
-// import Chart from 'chart.js'
+import Chart from '@/components/Chart'
+import Menu from '@/components/analytics/AnalyticsMenu'
+import DateBtn from '@/components/analytics/AnalyticsDateBtn'
 
 export default {
-  name: 'Analytics',
   components: {
-    LayoutNavbar
-    // chart
+    LayoutNavbar,
+    Chart,
+    Menu,
+    DateBtn
   },
   data () {
     return {
-      menu: 'Daily',
-      todayDate: '',
-      dailyDate: '',
-      weeklyDate: '',
+      menuList: ['Daily', 'Weekly'],
+      activeMenu: 'Daily',
+      todayDateObj: null,
+      dailyDate: null,
+      dailyDateObj: null,
+      changeDays: 0,
+      weeklyFirstDateObj: null,
+      weeklyLastDateObj: null,
       dailyData: [],
       weeklyData: [],
-      datacollection: null
+      chartWidth: 545,
+      chartHeight: 346,
+      datacollection: {
+        labels: [],
+        datasets: [{
+          label: 'Pomodoros',
+          backgroundColor: '#CACEAC',
+          data: []
+        }]
+      },
+      chartOptions: {
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              drawOnChartArea: false,
+              color: '#CACEAC',
+              lineWidth: 2,
+              drawTicks: false
+            },
+            ticks: {
+              fontColor: '#CACEAC',
+              fontSize: 16,
+              fontFamily: 'Arimo',
+              padding: 14
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              color: '#CACEAC',
+              drawOnChartArea: false,
+              lineWidth: 2,
+              drawTicks: false
+            },
+            ticks: {
+              beginAtZero: true,
+              fontColor: '#CACEAC',
+              fontSize: 16,
+              fontFamily: 'Arimo',
+              padding: 21
+            }
+          }]
+        }
+      }
     }
   },
   computed: {
@@ -164,95 +190,73 @@ export default {
       obj.focusTime = pomodoroNum * 25
 
       return obj
+    },
+    // countWeeklyData () {
+    //   return obj
+    // },
+    todayDate () {
+      return this.formatDate(this.todayDateObj)
+    },
+    weeklyDate () {
+      return `${this.formatDate(this.weeklyFirstDateObj)} ~ ${this.formatDate(this.weeklyLastDateObj)}`
+    }
+  },
+  watch: {
+    dailyDate () {
+      this.getDailyData()
     }
   },
   mounted () {
-    this.fillData()
-    // var chart = this.$refs.chart
-    // var ctx = chart.getContext('2d')
-    // var myChart = new Chart(ctx, { // eslint-disable-line no-unused-vars
-    //   type: 'bar',
-    //   data: {
-    //     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    //     datasets: [{
-    //       label: '# of Votes',
-    //       data: [12, 19, 3, 5, 2, 3],
-    //       backgroundColor: [
-    //         'rgba(255, 99, 132, 0.2)',
-    //         'rgba(54, 162, 235, 0.2)',
-    //         'rgba(255, 206, 86, 0.2)',
-    //         'rgba(75, 192, 192, 0.2)',
-    //         'rgba(153, 102, 255, 0.2)',
-    //         'rgba(255, 159, 64, 0.2)'
-    //       ],
-    //       borderColor: [
-    //         'rgba(255,99,132,1)',
-    //         'rgba(54, 162, 235, 1)',
-    //         'rgba(255, 206, 86, 1)',
-    //         'rgba(75, 192, 192, 1)',
-    //         'rgba(153, 102, 255, 1)',
-    //         'rgba(255, 159, 64, 1)'
-    //       ],
-    //       borderWidth: 1
-    //     }]
-    //   },
-    //   options: {
-    //     scales: {
-    //       yAxes: [{
-    //         ticks: {
-    //           beginAtZero: true
-    //         }
-    //       }]
-    //     }
-    //   }
-    // })
-  },
-  created () {
-    this.getDate()
-    this.getDailyData()
+    this.getCurrentDate()
     this.getWeeklyDate()
+    this.getDailyData()
+    this.fillData()
   },
-  methods: {
-    // fillData () {
-    //   this.datacollection = {
-    //     labels: [this.getRandomInt(), this.getRandomInt()],
-    //     datasets: [
-    //       {
-    //         label: 'Data One',
-    //         backgroundColor: '#f87979',
-    //         data: [this.getRandomInt(), this.getRandomInt()]
-    //       }, {
-    //         label: 'Data One',
-    //         backgroundColor: '#f87979',
-    //         data: [this.getRandomInt(), this.getRandomInt()]
-    //       }
-    //     ]
-    //   }
-    // },
-    // getRandomInt () {
-    //   return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-    // },
-    getDate () {
-      const currentTime = new Date()
-      const year = currentTime.getFullYear()
-      const month = `0${currentTime.getMonth() + 1}`.substr(-2)
-      const date = `0${currentTime.getDate()}`.substr(-2)
+  // created () {
 
-      this.dailyDate = `${year}-${month}-${date}`
-      this.todayDate = `${year}-${month}-${date}`
+  // },
+  methods: {
+    changeActiveMenu (item) {
+      this.activeMenu = item
+    },
+    formatDate (dateObj) {
+      const year = dateObj.getFullYear()
+      const month = `0${dateObj.getMonth() + 1}`.substr(-2) // 月份從 0 開始，前面補零，取最後兩個數字
+      const date = `0${dateObj.getDate()}`.substr(-2)
+
+      return `${year}-${month}-${date}`
+    },
+    getCurrentDate () {
+      this.todayDateObj = new Date()
+      this.dailyDateObj = new Date()
+      this.dailyDate = this.todayDate
     },
     getWeeklyDate () {
-      const currentTime = new Date()
-      const date = currentTime.getDate()
-      const firstDate = new Date(currentTime.setDate(date - 6))
+      const currentDateObj = new Date()
+      const currentDate = currentDateObj.getDate() // 今天日期
+      const currentDays = currentDateObj.getDay() // 今天的星期
 
-      let formatFirstDate = {
-        year: firstDate.getFullYear(),
-        month: `0${firstDate.getMonth() + 1}`.substr(-2),
-        date: `0${firstDate.getDate()}`.substr(-2)
+      // 計算這週第一天與最後一天的日期，星期日 = 0
+      this.weeklyFirstDateObj = new Date(currentDateObj.setDate(currentDate - currentDays))
+      this.weeklyLastDateObj = new Date(currentDateObj.setDate(currentDate - currentDays + 6))
+    },
+    changeDaysFunc (btn) {
+      let currentDate = this.dailyDateObj.getDate()
+
+      this.changeDays = btn
+      this.dailyDateObj = new Date(this.dailyDateObj.setDate(currentDate + this.changeDays))
+      this.dailyDate = this.formatDate(this.dailyDateObj)
+    },
+    changeWeekFunc (btn) {
+      if (btn > 0) {
+        this.changeDays = 7
+      } else {
+        this.changeDays = -7
       }
 
-      this.weeklyDate = `${formatFirstDate.year}-${formatFirstDate.month}-${formatFirstDate.date} ~ ${this.dailyDate}`
+      this.weeklyFirstDateObj = new Date(this.weeklyFirstDateObj.setDate(this.weeklyFirstDateObj.getDate() + this.changeDays))
+      this.weeklyLastDateObj = new Date(this.weeklyLastDateObj.setDate(this.weeklyLastDateObj.getDate() + this.changeDays))
+      this.fillData()
     },
     getDailyData () {
       const vm = this
@@ -266,86 +270,51 @@ export default {
 
       this.dailyData = dailyData
     },
-    nextDay () {
-      // console.log('next date')
+    getWeeklyData () {
+      // 過濾週間資料
     },
-    previousDay () {
-      // const currentTime = new Date()
-      // const date = currentTime.getDate()
-      // let i = 0
-      // i += 1
-      // const firstDate = new Date(currentTime.setDate(date - 1 * i))
-      // let formatFirstDate = {
-      //   year: firstDate.getFullYear(),
-      //   month: `0${firstDate.getMonth() + 1}`.substr(-2),
-      //   date: `0${firstDate.getDate()}`.substr(-2)
-      // }
-      // console.log(formatFirstDate)
-      // this.dailyDate = `${formatFirstDate.year}-${formatFirstDate.month}-${formatFirstDate.date}`
+    fillData () {
+      // 避免與原本的物件衝突，另外新增目前的週日物件
+      const dateObj = new Date(this.weeklyFirstDateObj)
+
+      const formate = (obj) => {
+        const mm = `0${obj.getMonth() + 1}`.substr(-2)
+        const dd = `0${obj.getDate()}`.substr(-2)
+        return `${mm}/${dd}`
+      }
+
+      const dateAry = [formate(dateObj)] // 先在陣列放入週日
+
+      for (let i = 0; i <= 5; i++) {
+        dateObj.setDate(dateObj.getDate() + 1)
+        dateAry.push(formate(dateObj))
+      }
+
+      this.datacollection = {
+        labels: dateAry,
+        datasets: [{
+          label: 'Pomodoros',
+          backgroundColor: '#CACEAC',
+          data: [7, 5, 6, 6, 6, 6, 7]
+        }]
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/scss/helpers/_variables.scss';
-
-.analytics-top {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
-  &-title {
-    margin-right: 80px;
-  }
+.title {
+  margin-right: 80px;
 }
 
-.analytics-top-menu {
+.nav-list {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  li {
-    width: 70px;
-    margin-right: 20px;
-    &:last-child {
-      margin-right: 0;
-    }
-    a {
-      position: relative;
-      display: block;
-      padding-top: 9px;
-      padding-bottom: 9px;
-      font-size: 20px;
-      text-align: center;
-      color: $mute-color;
-      transition: all .2s ease-out;
-      &:after {
-        content: '';
-        position: absolute;
-        right: 51%;
-        bottom: -4px;
-        left: 51%;
-        width: 0;
-        height: 4px;
-        background-color: $secondary-color;
-        transition: all .3s ease-out;
-      }
-      &:hover,
-      &.active {
-        font-weight: 700;
-        color: $secondary-color;
-        &:after {
-          right: 0;
-          left: 0;
-          width: 100%;
-        }
-      }
-    }
-  }
 }
 
-.analytics-container {
-  display: flex;
-  justify-content: flex-start;
+.main {
   margin-top: 57px;
 }
 
@@ -353,54 +322,19 @@ export default {
   margin-right: 140px;
 }
 
-.analytics-range {
-  width: 325px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 12px;
-  margin-bottom: 30px;
-  border-bottom: 4px solid $secondary-color;
-  &-txt {
-    margin-right: 15px;
-    margin-left: 15px;
-    font-size: 20px;
-    font-weight: 700;
-    color: $secondary-color;
-  }
-  &-btn {
-    display: block;
-    width: 15px;
-    height: 15px;
-    padding-right: 2px;
-    padding-left: 2px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    &.prev {
-      background-image: url('../assets/images/analy_arrow_left.svg');
-    }
-    &.next {
-      background-image: url('../assets/images/analy_arrow_right.svg');
-    }
-  }
+.analytics-chart {
+  margin-top: 30px;
 }
 
-.analytics-statistic {
-  li {
+.analytics-total {
+  &__item {
     margin-bottom: 20px;
     font-size: 20px;
     color: $secondary-color;
     &:last-child {
       margin-bottom: 0;
     }
-    span {
-      font-weight: 700;
-    }
   }
-}
-
-.analytics-chart {
-  margin-top: 30px;
 }
 
 .analytics-todo-list {

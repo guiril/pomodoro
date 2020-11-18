@@ -1,0 +1,22 @@
+$primary-color: #0A3125;
+$primary-dark-color: #061F17;
+$secondary-color: #CACEAC;
+$secondary-dark-color: #81846E;
+$mute-color: #407061;
+
+$primary: #0A3125;
+$primary-dark: #061F17;
+$secondary: #CACEAC;
+$secondary-dark: #81846E;
+$mute: #407061;
+
+$colors: (
+  'primary': $primary,
+  'primary-dark': $primary-dark,
+  'secondary': $secondary,
+  'secondary-dark': $secondary-dark,
+  'mute': $mute
+);
+
+$max-width: 1280px;
+$font-family: 'Arimo', 'Microsoft JhengHei', sans-serif;

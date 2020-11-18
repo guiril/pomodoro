@@ -61,8 +61,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// @import '@/assets/scss/helpers/_variables.scss';
-
 .ringtone {
   float: left;
   margin-top: 55px;

@@ -38,16 +38,15 @@ export default {
         const month = `0${time.getMonth() + 1}`.substr(-2)
         const date = `0${time.getDate()}`.substr(-2)
         const timestamp = Math.floor(time / 1000)
-        const data = {
-          name: this.todolistStr,
+        const todo = {
+          title: this.todolistStr,
           id: timestamp,
           date: `${year}-${month}-${date}`,
           pomodoroNum: 0,
           isCompleted: false
         }
-        this.$store.dispatch('addNewTodo', data)
+        this.$store.dispatch('addNewTodo', todo)
         this.todolistStr = ''
-        // this.menu = 'Todo'
       }
     }
   }
@@ -55,8 +54,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/helpers/_variables.scss';
-
 .todo-add {
   width: 410px;
   margin-top: 80px;

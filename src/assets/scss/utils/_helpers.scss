@@ -1,0 +1,25 @@
+@each $key, $value in $colors {
+  .u-#{key} {
+    color: $value;
+  }
+}
+
+.u-font-bold {
+  font-weight: 700;
+}
+
+.u-inline-block {
+  display: inline-block;
+}
+
+.u-d-flex {
+  display: flex;
+}
+
+.u-justify-flex-start {
+  justify-content: flex-start;
+}
+
+.u-align-flex-end {
+  align-items: flex-end;
+}
