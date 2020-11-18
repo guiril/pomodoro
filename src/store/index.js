@@ -13,8 +13,6 @@ export default new Vuex.Store({
       date: null,
       pomodoroNum: null
     },
-    isAudioOn: true,
-    isPlayAudio: false,
     todoList: []
   },
   getters: {
@@ -45,7 +43,6 @@ export default new Vuex.Store({
       state.timerViews = view
     },
     changePomodoroViews (state, view) {
-<<<<<<< HEAD
       // 'PomodoroInit', 'PomodoroCount', 'PomodoroStop'
       state.pomodoroViews = view
     },
@@ -79,58 +76,11 @@ export default new Vuex.Store({
           el.isCompleted = true
         }
       })
-=======
-      state.pomodoroViews = view
-    },
-    addNewTodoItem (state, todo) {
-      state.todoListProcessing.push(todo)
-    },
-    addPomodoroAmount (state) {
-      state.currentTodo.amount += 1
-      state.todoListProcessing.forEach((el) => {
-
-      })
-    },
-    // addPomodoroNum (state) {
-    //   if (state.currentTask === '“Unknown task”') {
-    //     return
-    //   }
-    //   state.todoList.forEach((el) => {
-    //     if (state.currentTask === el.name) {
-    //       el.pomodoroNum = el.pomodoroNum + 1
-    //     }
-    //   })
-    // },
-    completeTask (state, id) {
-      state.todoListProcessing.forEach((el, index) => {
-        if (el.id === id) {
-          state.todoListProcessing.splice(index, 1)
-          state.todoListDone.push(el)
-        }
-      })
-    },
-    removedTask (state, id) {
-      state.todoListProcessing.forEach((el, index) => {
-        if (el.id === id) {
-          state.todoListProcessing.splice(index, 1)
-        }
-      })
-    },
-    startTask (state, item) {
-      state.currentTodo = item
-    },
-    CONTROLAUDIOSWITCH (state, status) {
-      state.isAudioOn = !state.isAudioOn
-    },
-    NEWPOMODORO (state, status) {
-      state.currentTask = '“Unknown task”'
->>>>>>> cb12bdbf6a5a2f9898a5b4f5be6e6ff144b1aeb2
     }
   },
   actions: {
     changeTimerViews ({ commit }, view) {
       commit('changeTimerViews', view)
-<<<<<<< HEAD
     },
     changePomodoroViews ({ commit }, view) {
       commit('changePomodoroViews', view)
@@ -150,48 +100,6 @@ export default new Vuex.Store({
     },
     completeTask ({ commit }, todo) {
       commit('completeTask', todo)
-      // commit('removedTask', todo)
-=======
-    },
-    changePomodoroViews ({ commit }, view) {
-      commit('changePomodoroViews', view)
-    },
-    addNewTodoItem ({ commit }, title) {
-      const time = new Date()
-      const year = time.getFullYear()
-      const month = `0${time.getMonth() + 1}`.substr(-2)
-      const date = `0${time.getDate()}`.substr(-2)
-      const timestamp = Math.floor(time / 1000)
-      const todo = {
-        title: title,
-        id: timestamp,
-        date: `${year}-${month}-${date}`,
-        amount: 0
-      }
-      commit('addNewTodoItem', todo)
-
-      if (todo.title === '“Unknown task”') {
-        commit('startTask', todo)
-      }
-    },
-    addPomodoroAmount ({ commit }) {
-      commit('addPomodoroAmount')
-    },
-    completeTask ({ commit }, id) {
-      commit('completeTask', id)
-    },
-    removedTask ({ commit }, id) {
-      commit('removedTask', id)
-    },
-    startTask ({ commit }, item) {
-      commit('startTask', item)
-    },
-    controlAudioSwitch ({ commit }, status) {
-      commit('CONTROLAUDIOSWITCH', status)
-    },
-    newPomodoro ({ commit }, status) {
-      commit('NEWPOMODORO', status)
->>>>>>> cb12bdbf6a5a2f9898a5b4f5be6e6ff144b1aeb2
     }
   }
 })

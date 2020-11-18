@@ -31,7 +31,6 @@
               @click.prevent="removeTask(item.id)"
             >
               <img
-                class="todo-actions__img"
                 src="@/assets/images/todo_remove.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -41,7 +40,6 @@
           <li class="todo-list-action__item">
             <button class="todo-list-action__btn animated-top">
               <img
-                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_up.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -51,7 +49,6 @@
           <li class="todo-list-action__item">
             <button class="todo-list-action__btn animated-top">
               <img
-                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_down.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -64,7 +61,6 @@
               @click.prevent="doTask(item)"
             >
               <img
-                class="todo-actions__img"
                 src="@/assets/images/todo_start.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -95,9 +91,6 @@ export default {
     }
   },
   methods: {
-    completeTask (id) {
-      this.$store.dispatch('completeTask', id)
-    },
     completeTask (todo) {
       this.$store.dispatch('completeTask', todo)
     },

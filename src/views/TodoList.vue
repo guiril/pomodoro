@@ -68,7 +68,7 @@ export default {
 
 .container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
 .list {

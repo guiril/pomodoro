@@ -55,11 +55,7 @@ export default {
 }
 </script>
 
-<<<<<<< HEAD
 <style scoped lang="scss">
-=======
-<style lang="scss" scoped>
->>>>>>> cb12bdbf6a5a2f9898a5b4f5be6e6ff144b1aeb2
 .navbar {
   float: right;
 }
