@@ -40,7 +40,7 @@
 export default {
   data () {
     return {
-      taskTitle: this.$store.state.currentTask
+      taskTitle: this.$store.state.currentTodo.title
     }
   },
   methods: {

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <todo-list-none v-if="doneTodoList.length === 0" />
+    <todo-list-empty v-if="todoList.length === 0" />
     <ul class="todo-list">
       <li
-        v-for="item in doneTodoList"
+        v-for="item in todoList"
         :key="item.id"
         class="todo-list__item animated fadeInLeft"
       >
@@ -13,7 +13,7 @@
           </p>
           <ul class="todo-list-number">
             <li
-              v-for="(num, index) in item.pomodoroNum"
+              v-for="(num, index) in item.amount"
               :key="index"
               class="todo-list-number__item"
             />
@@ -28,17 +28,20 @@
 </template>
 
 <script>
-import TodoListNone from '@/components/todo-list/TodoListNone'
+import TodoListEmpty from '@/components/todo-list/TodoListEmpty'
 
 export default {
   name: 'TodoListDone',
   components: {
-    TodoListNone
+    TodoListEmpty
   },
   data () {
     return {}
   },
   computed: {
+    todoList () {
+      return this.$store.state.todoListDone
+    },
     doneTodoList () {
       return this.$store.getters.todoListDone
     }

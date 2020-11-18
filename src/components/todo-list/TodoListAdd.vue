@@ -1,16 +1,16 @@
 <template>
-  <div class="todo-add">
+  <div class="todo-container">
     <input
-      v-model.trim="todolistStr"
-      class="todo-add-input"
+      v-model.trim="todoText"
+      class="todo-input u-inline-block"
       type="text"
       name=""
       placeholder="Task…"
-      @keyup="checkStrLength"
+      @keyup="checkTodoTextLength"
       @keypress.enter="addNewTodo"
     >
     <button
-      class="todo-add-btn"
+      class="todo-btn u-inline-block"
       @click="addNewTodo"
     >
       Add task
@@ -23,13 +23,13 @@ export default {
   name: 'TodoListAdd',
   data () {
     return {
-      todolistStr: ''
+      todoText: ''
     }
   },
   methods: {
-    checkStrLength () {
+    checkTodoTextLength () {
       const limitLength = 20
-      this.todolistStr = this.todolistStr.substr(0, limitLength)
+      this.todoText = this.todoText.substr(0, limitLength)
     },
     addNewTodo () {
       if (this.todolistStr) {
@@ -59,39 +59,39 @@ export default {
   margin-top: 80px;
   margin-left: 112px;
   text-align: right;
-  &-input {
-    display: inline-block;
-    width: 100%;
-    padding: 15px 22px;
-    margin-bottom: 32px;
+}
+
+.todo-input {
+  width: 100%;
+  padding: 15px 22px;
+  margin-bottom: 32px;
+  font-size: 18px;
+  font-family: $font-family;
+  color: $secondary-color;
+  background-color: $primary-color;
+  border: 1px solid $secondary-color;
+  border-radius: 4px;
+  &::placeholder {
     font-size: 18px;
+    font-style: italic;
     font-family: $font-family;
-    color: $secondary-color;
-    background-color: $primary-color;
-    border: 1px solid $secondary-color;
-    border-radius: 4px;
-    &::placeholder {
-      font-size: 18px;
-      font-style: italic;
-      font-family: $font-family;
-      font-style: italic;
-      color: $mute-color;
-    }
+    font-style: italic;
+    color: $mute-color;
   }
-  &-btn {
-    display: inline-block;
-    padding: 9px 36px;
-    font-size: 20px;
-    color: $primary-color;
-    background-color: $secondary-color;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    transition: all .3s;
-    &:hover {
-      color: $secondary-color;
-      background-color: transparent;
-      border: 1px solid $secondary-color;
-    }
+}
+
+.todo-btn {
+  padding: 9px 36px;
+  font-size: 20px;
+  color: $primary-color;
+  background-color: $secondary-color;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all .3s;
+  &:hover {
+    color: $secondary-color;
+    background-color: transparent;
+    border: 1px solid $secondary-color;
   }
 }
 </style>

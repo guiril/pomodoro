@@ -1,6 +1,6 @@
 <template>
   <div>
-    <todo-list-none v-if="todoList.length === 0" />
+    <todo-list-empty v-if="todoList.length === 0" />
     <ul class="todo-list">
       <li
         v-for="item in todoList"
@@ -18,7 +18,7 @@
           </p>
           <ul class="todo-list-number">
             <li
-              v-for="(num, index) in item.pomodoroNum"
+              v-for="(num, index) in item.amount"
               :key="index"
               class="todo-list-number__item"
             />
@@ -31,6 +31,7 @@
               @click.prevent="removeTask(item.id)"
             >
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_remove.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -40,6 +41,7 @@
           <li class="todo-list-action__item">
             <button class="todo-list-action__btn animated-top">
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_up.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -49,6 +51,7 @@
           <li class="todo-list-action__item">
             <button class="todo-list-action__btn animated-top">
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_arrow_down.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -61,6 +64,7 @@
               @click.prevent="doTask(item)"
             >
               <img
+                class="todo-actions__img"
                 src="@/assets/images/todo_start.svg"
                 alt=""
                 class="todo-list-action__icon"
@@ -74,12 +78,11 @@
 </template>
 
 <script>
-import TodoListNone from '@/components/todo-list/TodoListNone'
+import TodoListEmpty from '@/components/todo-list/TodoListEmpty'
 
 export default {
-  name: 'TodoListProcessing',
   components: {
-    TodoListNone
+    TodoListEmpty
   },
   data () {
     return {
@@ -92,8 +95,8 @@ export default {
     }
   },
   methods: {
-    removeTask (item) {
-      this.$store.dispatch('removedTask', item)
+    completeTask (id) {
+      this.$store.dispatch('completeTask', id)
     },
     completeTask (todo) {
       this.$store.dispatch('completeTask', todo)
