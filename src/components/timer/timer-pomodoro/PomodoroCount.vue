@@ -91,7 +91,7 @@ export default {
     return {
       remainingMinutes: '25',
       remainingSeconds: '00',
-      totalSeconds: 5,
+      totalSeconds: 15,
       taskTitle: this.$store.state.currentTask.title,
       currentInterval: null,
       isCountdowning: false,
@@ -126,9 +126,9 @@ export default {
         return
       }
 
-      if (!this.$store.getters.checkTodayTodoList) {
-        this.$store.dispatch('addNewTodoItem', this.currentTask.title)
-      }
+      // if (!this.$store.getters.checkTodayTodoList) {
+      //   this.$store.dispatch('addNewTodoItem', this.currentTask.title)
+      // }
 
       this.isCountdowning = true
       this.currentInterval = setInterval(() => {
@@ -155,7 +155,7 @@ export default {
     timesUp () {
       this.isTimesUp = true
       this.pauseCountdown()
-      this.$store.dispatch('addPomodoroAmount')
+      this.$store.dispatch('addPomodoroNum')
     }
   }
 }

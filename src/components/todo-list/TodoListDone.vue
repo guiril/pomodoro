@@ -31,23 +31,13 @@
 import TodoListEmpty from '@/components/todo-list/TodoListEmpty'
 
 export default {
-  name: 'TodoListDone',
   components: {
     TodoListEmpty
   },
-  data () {
-    return {}
-  },
   computed: {
     todoList () {
-      return this.$store.state.todoListDone
-    },
-    doneTodoList () {
       return this.$store.getters.todoListDone
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

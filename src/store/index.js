@@ -60,11 +60,11 @@ export default new Vuex.Store({
       state.currentTask = todo
     },
     addPomodoroNum (state) {
-      if (state.currentTask === '“Unknown task”') {
+      if (state.currentTask.title === '“Unknown task”') {
         return
       }
       state.todoList.forEach((el) => {
-        if (state.currentTask === el.name) {
+        if (state.currentTask.title === el.title) {
           el.pomodoroNum = el.pomodoroNum + 1
         }
       })

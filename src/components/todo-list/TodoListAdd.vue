@@ -1,10 +1,9 @@
 <template>
   <div class="todo-container">
     <input
-      v-model.trim="todoText"
+      v-model.trim="todolistStr"
       class="todo-input u-inline-block"
       type="text"
-      name=""
       placeholder="Task…"
       @keyup="checkTodoTextLength"
       @keypress.enter="addNewTodo"
@@ -20,16 +19,15 @@
 
 <script>
 export default {
-  name: 'TodoListAdd',
   data () {
     return {
-      todoText: ''
+      todolistStr: ''
     }
   },
   methods: {
     checkTodoTextLength () {
       const limitLength = 20
-      this.todoText = this.todoText.substr(0, limitLength)
+      this.todolistStr = this.todolistStr.substr(0, limitLength)
     },
     addNewTodo () {
       if (this.todolistStr) {
@@ -45,6 +43,7 @@ export default {
           pomodoroNum: 0,
           isCompleted: false
         }
+
         this.$store.dispatch('addNewTodo', todo)
         this.todolistStr = ''
       }

@@ -32,7 +32,10 @@
           @changeNumber="changeWeekFunc"
         />
         <!-- 任務列表 -->
-        <ul class="analytics-total">
+        <ul
+          v-if="activeMenu === 'Daily'"
+          class="analytics-total"
+        >
           <li class="analytics-total__item">
             Pomodoros : <span class="u-font-bold">{{ countDailyData.pomodoroNum }}</span>
           </li>
@@ -44,6 +47,23 @@
           </li>
           <li class="analytics-total__item">
             Focus time : <span class="u-font-bold">{{ countDailyData.focusTime }}</span> mins
+          </li>
+        </ul>
+        <ul
+          v-if="activeMenu === 'Weekly'"
+          class="analytics-total"
+        >
+          <li class="analytics-total__item">
+            Pomodoros : <span class="u-font-bold">{{ countWeeklyData.pomodoroNum }}</span>
+          </li>
+          <li class="analytics-total__item">
+            Tasks : <span class="u-font-bold">{{ countWeeklyData.tasksNum }}</span>
+          </li>
+          <li class="analytics-total__item">
+            Completed : <span class="u-font-bold">{{ countWeeklyData.completedNum }}</span>
+          </li>
+          <li class="analytics-total__item">
+            Focus time : <span class="u-font-bold">{{ countWeeklyData.focusTime }}</span> mins
           </li>
         </ul>
       </div>
@@ -110,6 +130,12 @@ export default {
     return {
       menuList: ['Daily', 'Weekly'],
       activeMenu: 'Daily',
+      today: {
+        year: null,
+        month: null,
+        date: null,
+        day: null
+      },
       todayDateObj: null,
       dailyDate: null,
       dailyDateObj: null,
@@ -120,14 +146,7 @@ export default {
       weeklyData: [],
       chartWidth: 545,
       chartHeight: 346,
-      datacollection: {
-        labels: [],
-        datasets: [{
-          label: 'Pomodoros',
-          backgroundColor: '#CACEAC',
-          data: []
-        }]
-      },
+      datacollection: null,
       chartOptions: {
         legend: {
           display: false
@@ -155,7 +174,8 @@ export default {
               drawTicks: false
             },
             ticks: {
-              beginAtZero: true,
+              min: 0,
+              max: 14,
               fontColor: '#CACEAC',
               fontSize: 16,
               fontFamily: 'Arimo',
@@ -167,33 +187,15 @@ export default {
     }
   },
   computed: {
-    countDailyData () {
-      let pomodoroNum = 0
-      let completedNum = 0
-
-      let obj = {
-        pomodoroNum: 0,
-        tasksNum: this.dailyData.length,
-        completedNum: 0,
-        focusTime: 0
-      }
-
-      this.dailyData.forEach((el) => {
-        pomodoroNum += el.pomodoroNum
-        if (el.isCompleted) {
-          completedNum += 1
-        }
-      })
-
-      obj.pomodoroNum = pomodoroNum
-      obj.completedNum = completedNum
-      obj.focusTime = pomodoroNum * 25
-
-      return obj
+    todoList () {
+      return this.$store.state.todoList
     },
-    // countWeeklyData () {
-    //   return obj
-    // },
+    countDailyData () {
+      return this.countData(this.dailyData)
+    },
+    countWeeklyData () {
+      return this.countData(this.weeklyData)
+    },
     todayDate () {
       return this.formatDate(this.todayDateObj)
     },
@@ -204,17 +206,18 @@ export default {
   watch: {
     dailyDate () {
       this.getDailyData()
+    },
+    weeklyFirstDateObj () {
+      this.getWeeklyData()
     }
   },
   mounted () {
     this.getCurrentDate()
     this.getWeeklyDate()
     this.getDailyData()
-    this.fillData()
+    this.getWeeklyData()
+    this.fillWeeklyData()
   },
-  // created () {
-
-  // },
   methods: {
     changeActiveMenu (item) {
       this.activeMenu = item
@@ -227,18 +230,23 @@ export default {
       return `${year}-${month}-${date}`
     },
     getCurrentDate () {
-      this.todayDateObj = new Date()
-      this.dailyDateObj = new Date()
+      const currentDateObj = new Date()
+      this.today.year = currentDateObj.getFullYear()
+      this.today.month = currentDateObj.getMonth()
+      this.today.date = currentDateObj.getDate()
+      this.today.day = currentDateObj.getDay()
+
+      // 修正成今天 00:00
+      this.todayDateObj = new Date(this.today.year, this.today.month, this.today.date)
+      this.dailyDateObj = new Date(this.today.year, this.today.month, this.today.date)
       this.dailyDate = this.todayDate
     },
     getWeeklyDate () {
-      const currentDateObj = new Date()
-      const currentDate = currentDateObj.getDate() // 今天日期
-      const currentDays = currentDateObj.getDay() // 今天的星期
+      const currentDateObj = new Date(this.today.year, this.today.month, this.today.date)
 
       // 計算這週第一天與最後一天的日期，星期日 = 0
-      this.weeklyFirstDateObj = new Date(currentDateObj.setDate(currentDate - currentDays))
-      this.weeklyLastDateObj = new Date(currentDateObj.setDate(currentDate - currentDays + 6))
+      this.weeklyFirstDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day))
+      this.weeklyLastDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day + 6))
     },
     changeDaysFunc (btn) {
       let currentDate = this.dailyDateObj.getDate()
@@ -256,13 +264,12 @@ export default {
 
       this.weeklyFirstDateObj = new Date(this.weeklyFirstDateObj.setDate(this.weeklyFirstDateObj.getDate() + this.changeDays))
       this.weeklyLastDateObj = new Date(this.weeklyLastDateObj.setDate(this.weeklyLastDateObj.getDate() + this.changeDays))
-      this.fillData()
+      this.fillWeeklyData()
     },
     getDailyData () {
       const vm = this
-      const data = this.$store.state.todoList
 
-      let dailyData = data.filter((el) => {
+      let dailyData = this.todoList.filter((el) => {
         if (el.date === vm.dailyDate) {
           return el
         }
@@ -271,11 +278,43 @@ export default {
       this.dailyData = dailyData
     },
     getWeeklyData () {
-      // 過濾週間資料
+      const vm = this
+      this.weeklyData = [] // 清空資料
+      // 週間資料
+      this.todoList.forEach((el) => {
+        if (el.id >= Math.floor(vm.weeklyFirstDateObj / 1000) && el.id <= Math.floor(vm.weeklyLastDateObj / 1000)) {
+          vm.weeklyData.push(el)
+        }
+      })
     },
-    fillData () {
-      // 避免與原本的物件衝突，另外新增目前的週日物件
+    countData (dataAry) {
+      let pomodoroNum = 0
+      let completedNum = 0
+
+      let obj = {
+        pomodoroNum: 0,
+        tasksNum: dataAry.length,
+        completedNum: 0,
+        focusTime: 0
+      }
+
+      dataAry.forEach((el) => {
+        pomodoroNum += el.pomodoroNum
+        if (el.isCompleted) {
+          completedNum += 1
+        }
+      })
+
+      obj.pomodoroNum = pomodoroNum
+      obj.completedNum = completedNum
+      obj.focusTime = pomodoroNum * 25
+
+      return obj
+    },
+    fillWeeklyData () {
       const dateObj = new Date(this.weeklyFirstDateObj)
+      const dailyDataMap = {}
+      const dailyDataNumber = []
 
       const formate = (obj) => {
         const mm = `0${obj.getMonth() + 1}`.substr(-2)
@@ -283,11 +322,30 @@ export default {
         return `${mm}/${dd}`
       }
 
-      const dateAry = [formate(dateObj)] // 先在陣列放入週日
+      // 先在日期陣列與資料放入週日
+      const dateAry = [formate(dateObj)]
+      dailyDataMap[`${dateObj.getMonth()}${dateObj.getDate()}`] = []
 
       for (let i = 0; i <= 5; i++) {
-        dateObj.setDate(dateObj.getDate() + 1)
-        dateAry.push(formate(dateObj))
+        const month = dateObj.getMonth()
+        const date = dateObj.getDate()
+
+        dateObj.setDate(date + 1) // 週一到週六的日期
+        dateAry.push(formate(dateObj)) // 格式化
+        dailyDataMap[`${month}${date}`] = [] // 將日期設置成資料 map 的 key
+
+        for (let j = 0; j < this.weeklyData.length; j++) {
+          // 將任務 timestamp 轉換成毫秒並傳回 date 物件
+          const dataDateObj = new Date(this.weeklyData[j].id * 1000)
+
+          if (month === dataDateObj.getMonth() && date === dataDateObj.getDate()) {
+            dailyDataMap[`${month}${date}`].push(this.weeklyData[j])
+          }
+        }
+      }
+
+      for (let item in dailyDataMap) {
+        dailyDataNumber.push(dailyDataMap[item].length)
       }
 
       this.datacollection = {
@@ -295,7 +353,7 @@ export default {
         datasets: [{
           label: 'Pomodoros',
           backgroundColor: '#CACEAC',
-          data: [7, 5, 6, 6, 6, 6, 7]
+          data: dailyDataNumber
         }]
       }
     }
