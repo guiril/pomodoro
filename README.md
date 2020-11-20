@@ -6,8 +6,7 @@
 ## 主要練習技術
 
 * `new Date()` 物件運用。
-* 以 **Vue.js** 為前端框架。
-* 透過 **Vuex** 管理資料狀態。
+* 以 **Vue.js** 為前端框架，並透過 **Vuex** 管理資料狀態。
 * 以 **ESLlint - JavaScript Standard Style** 管理程式碼風格。
 * 使用第三方套件 **Chart.js** 繪製客製化圖表。
 
