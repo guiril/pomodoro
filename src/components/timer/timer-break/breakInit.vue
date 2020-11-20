@@ -61,7 +61,7 @@ export default {
       currentInterval: null,
       remainingMinutes: '05',
       remainingSeconds: '00',
-      totalSeconds: 5,
+      totalSeconds: 300,
       isCountdowning: false
     }
   },

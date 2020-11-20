@@ -91,7 +91,7 @@ export default {
     return {
       remainingMinutes: '25',
       remainingSeconds: '00',
-      totalSeconds: 15,
+      totalSeconds: 1500,
       taskTitle: this.$store.state.currentTask.title,
       currentInterval: null,
       isCountdowning: false,
@@ -125,10 +125,6 @@ export default {
       if (elapsedSeconds === 0) {
         return
       }
-
-      // if (!this.$store.getters.checkTodayTodoList) {
-      //   this.$store.dispatch('addNewTodoItem', this.currentTask.title)
-      // }
 
       this.isCountdowning = true
       this.currentInterval = setInterval(() => {

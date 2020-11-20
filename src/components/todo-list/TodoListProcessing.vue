@@ -28,7 +28,7 @@
           <li class="todo-list-action__item">
             <button
               class="todo-list-action__btn"
-              @click.prevent="removeTask(item.id)"
+              @click.prevent="removedTask(item )"
             >
               <img
                 src="@/assets/images/todo_remove.svg"
@@ -37,7 +37,7 @@
               >
             </button>
           </li>
-          <li class="todo-list-action__item">
+          <!-- <li class="todo-list-action__item">
             <button class="todo-list-action__btn animated-top">
               <img
                 src="@/assets/images/todo_arrow_up.svg"
@@ -54,7 +54,7 @@
                 class="todo-list-action__icon"
               >
             </button>
-          </li>
+          </li> -->
           <li class="todo-list-action__item">
             <button
               class="todo-list-action__btn"
@@ -94,15 +94,14 @@ export default {
     completeTask (todo) {
       this.$store.dispatch('completeTask', todo)
     },
-    doTask (item) {
-      this.$store.dispatch('doTask', item)
+    removedTask (todo) {
+      this.$store.dispatch('removedTask', todo)
+    },
+    doTask (todo) {
+      this.$store.dispatch('doTask', todo)
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
       this.$router.push('/')
     }
   }
 }
 </script>
-
-<style lang="scss">
-
-</style>
