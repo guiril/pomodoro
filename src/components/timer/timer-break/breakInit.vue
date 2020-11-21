@@ -96,7 +96,6 @@ export default {
     stopCountdown () {
       this.pauseCountdown()
       this.$emit('stop-break')
-      // this.currentViews = 'stopBreak'
       this.remainingMinutes = '05'
       this.remainingSeconds = '00'
       this.totalSeconds = 300

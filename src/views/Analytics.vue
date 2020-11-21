@@ -209,9 +209,10 @@ export default {
     },
     weeklyFirstDateObj () {
       this.getWeeklyData()
+      this.fillWeeklyData()
     }
   },
-  mounted () {
+  created () {
     this.getCurrentDate()
     this.getWeeklyDate()
     this.getDailyData()
@@ -243,10 +244,18 @@ export default {
     },
     getWeeklyDate () {
       const currentDateObj = new Date(this.today.year, this.today.month, this.today.date)
+      let lastDateObj, lastDateYear, lastDateMonth, lastDateDate
 
       // 計算這週第一天與最後一天的日期，星期日 = 0
       this.weeklyFirstDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day))
-      this.weeklyLastDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day + 6))
+
+      // 計算這週最後一天的日期，並將時間修正為 23:59:59 再存到 data 裡的變數
+      lastDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day + 6))
+      lastDateYear = lastDateObj.getFullYear()
+      lastDateMonth = lastDateObj.getMonth()
+      lastDateDate = lastDateObj.getDate()
+
+      this.weeklyLastDateObj = new Date(lastDateYear, lastDateMonth, lastDateDate, 23, 59, 59)
     },
     changeDaysFunc (btn) {
       let currentDate = this.dailyDateObj.getDate()
@@ -280,6 +289,7 @@ export default {
     getWeeklyData () {
       const vm = this
       this.weeklyData = [] // 清空資料
+
       // 週間資料
       this.todoList.forEach((el) => {
         if (el.id >= Math.floor(vm.weeklyFirstDateObj / 1000) && el.id <= Math.floor(vm.weeklyLastDateObj / 1000)) {
@@ -288,6 +298,7 @@ export default {
       })
     },
     countData (dataAry) {
+      // 統計每日或每週的資料
       let pomodoroNum = 0
       let completedNum = 0
 
@@ -313,7 +324,7 @@ export default {
     },
     fillWeeklyData () {
       const dateObj = new Date(this.weeklyFirstDateObj)
-      const dailyDataMap = {}
+      const dailyDataMap = {} // { mm/dd: number }
       const dailyDataNumber = []
 
       const formate = (obj) => {
@@ -323,16 +334,18 @@ export default {
       }
 
       // 先在日期陣列與資料放入週日
-      const dateAry = [formate(dateObj)]
+      const dateAry = [formate(dateObj)] // 放在 labels 的日期
       dailyDataMap[`${dateObj.getMonth()}${dateObj.getDate()}`] = []
 
-      for (let i = 0; i <= 5; i++) {
+      for (let i = 0; i <= 6; i++) {
         const month = dateObj.getMonth()
         const date = dateObj.getDate()
 
-        dateObj.setDate(date + 1) // 週一到週六的日期
-        dateAry.push(formate(dateObj)) // 格式化
-        dailyDataMap[`${month}${date}`] = [] // 將日期設置成資料 map 的 key
+        if (i <= 5) {
+          dateObj.setDate(date + 1) // 週一到週六的日期
+          dateAry.push(formate(dateObj)) // 格式化新增到 labels 日期陣列
+          dailyDataMap[`${month}${date + 1}`] = [] // 將日期設置成資料 map 的 key
+        }
 
         for (let j = 0; j < this.weeklyData.length; j++) {
           // 將任務 timestamp 轉換成毫秒並傳回 date 物件

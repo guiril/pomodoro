@@ -152,6 +152,7 @@ export default {
       this.isTimesUp = true
       this.pauseCountdown()
       this.$store.dispatch('addPomodoroNum')
+      this.$bus.$emit('timesUp')
     }
   }
 }

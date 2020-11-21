@@ -28,7 +28,7 @@
           <li class="todo-list-action__item">
             <button
               class="todo-list-action__btn"
-              @click.prevent="removedTask(item )"
+              @click.prevent="removedTask(item)"
             >
               <img
                 src="@/assets/images/todo_remove.svg"
@@ -37,8 +37,11 @@
               >
             </button>
           </li>
-          <!-- <li class="todo-list-action__item">
-            <button class="todo-list-action__btn animated-top">
+          <li class="todo-list-action__item">
+            <button
+              class="todo-list-action__btn animated-top"
+              @click="moveUp(item)"
+            >
               <img
                 src="@/assets/images/todo_arrow_up.svg"
                 alt=""
@@ -47,14 +50,17 @@
             </button>
           </li>
           <li class="todo-list-action__item">
-            <button class="todo-list-action__btn animated-top">
+            <button
+              class="todo-list-action__btn animated-top"
+              @click="moveDown(item)"
+            >
               <img
                 src="@/assets/images/todo_arrow_down.svg"
                 alt=""
                 class="todo-list-action__icon"
               >
             </button>
-          </li> -->
+          </li>
           <li class="todo-list-action__item">
             <button
               class="todo-list-action__btn"
@@ -82,15 +88,34 @@ export default {
   },
   data () {
     return {
-
+      todoList: []
     }
   },
   computed: {
-    todoList () {
+    todoListProcessing () {
       return this.$store.getters.todoListProcessing
     }
   },
+  watch: {
+    todoListProcessing () {
+      this.filterTodos()
+    }
+  },
+  created () {
+    this.filterTodos()
+  },
   methods: {
+    filterTodos () {
+      const vm = this
+      const allTodos = this.$store.state.todoList
+      this.todoList = []
+      // 進行中的任務
+      allTodos.forEach((el) => {
+        if (!el.isCompleted) {
+          vm.todoList.unshift(el)
+        }
+      })
+    },
     completeTask (todo) {
       this.$store.dispatch('completeTask', todo)
     },
@@ -101,6 +126,26 @@ export default {
       this.$store.dispatch('doTask', todo)
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
       this.$router.push('/')
+    },
+    moveDown (todo) {
+      const todos = [...this.todoList]
+      const lastIndex = this.todoList.length - 1
+      const index = this.todoList.findIndex((el) => el === todo)
+
+      if (index !== lastIndex) {
+        [todos[index], todos[index + 1]] = [todos[index + 1], todos[index]]
+        this.todoList = todos
+      }
+    },
+    moveUp (todo) {
+      const todos = [...this.todoList]
+      // const firstIndex = 0
+      const index = this.todoList.findIndex((el) => el === todo)
+
+      if (index !== 0) {
+        [todos[index - 1], todos[index]] = [todos[index], todos[index - 1]]
+        this.todoList = todos
+      }
     }
   }
 }

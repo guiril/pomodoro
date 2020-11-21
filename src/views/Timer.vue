@@ -1,7 +1,7 @@
 <template>
   <div>
     <header class="header">
-      <!-- <timer-ringtone /> -->
+      <timer-ringtone />
       <layout-navbar />
     </header>
     <main class="main">
@@ -35,14 +35,14 @@
 
 <script>
 import LayoutNavbar from '@/components/LayoutNavbar'
-// import TimerRingtone from '@/components/timer/TimerRingtone'
+import TimerRingtone from '@/components/timer/TimerRingtone'
 import TimerPomodoro from '@/components/timer/TimerPomodoro'
 import TimerBreak from '@/components/timer/TimerBreak'
 
 export default {
   name: 'Home',
   components: {
-    // TimerRingtone,
+    TimerRingtone,
     LayoutNavbar,
     TimerPomodoro,
     TimerBreak

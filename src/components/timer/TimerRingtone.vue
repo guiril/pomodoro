@@ -1,22 +1,17 @@
 <template>
-  <div
+  <button
     class="ringtone"
     @click="controlAudioSwitch"
   >
-    <audio
-      src="audios/Splashing_Around.mp3"
-      type="audio/mpeg"
-      :autoplay="isPlayAudio"
-    />
     <div v-if="isAudioOn">
       <img
         class="ringtone__img"
         src="@/assets/images/ringtone_bell_on.svg"
         alt=""
       >
-      <span
-        class="ringtone__txt"
-      >On</span>
+      <span class="ringtone__txt">
+        On
+      </span>
     </div>
     <div v-if="!isAudioOn">
       <img
@@ -24,37 +19,42 @@
         src="@/assets/images/ringtone_bell_off.svg"
         alt=""
       >
-      <span
-        class="ringtone__txt--off"
-      >Off</span>
+      <span class="ringtone__txt ringtone__txt--off">
+        Off
+      </span>
     </div>
-  </div>
+  </button>
 </template>
 
 <script>
 export default {
-  name: 'ItemRingtone',
-  // props: {
-  //   isPlayAudio: {
-  //     type: Boolean,
-  //     default: false
-  //   }
-  // },
   data () {
     return {
+      audio: null,
+      isAudioOn: true
     }
   },
-  computed: {
-    isAudioOn () {
-      return this.$store.state.isAudioOn
-    },
-    isPlayAudio () {
-      return this.$store.state.isPlayAudio
-    }
+  created () {
+    const vm = this
+
+    this.audio = new Audio()
+    this.$bus.$on('timesUp', () => {
+      vm.timesUp()
+    })
   },
   methods: {
+    timesUp () {
+      if (this.isAudioOn) {
+        this.audio.src = 'audios/Splashing_Around.mp3'
+        this.audio.load()
+        this.audio.play()
+      }
+    },
     controlAudioSwitch () {
-      this.$store.dispatch('controlAudioSwitch')
+      this.isAudioOn = !this.isAudioOn
+      if (!this.isAudioOn) {
+        this.audio.pause()
+      }
     }
   }
 }
@@ -71,10 +71,10 @@ export default {
   }
   &__img {
     display: inline-block;
-    vertical-align: bottom;
     margin-right: 10px;
   }
   &__txt {
+    width: 32px;
     display: inline-block;
     vertical-align: bottom;
     font-size: 20px;

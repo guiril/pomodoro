@@ -46,6 +46,7 @@ export default {
 
         this.$store.dispatch('addNewTodo', todo)
         this.todolistStr = ''
+        this.$emit('changeMenu', 'Todo')
       }
     }
   }
@@ -53,6 +54,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.todo-container {
+  margin-top: 85px;
+}
+
 .todo-add {
   width: 410px;
   margin-top: 80px;

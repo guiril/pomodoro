@@ -18,10 +18,15 @@ export default {
   methods: {
     createData (title, day, number) {
       const time = new Date()
-      const year = time.getFullYear()
-      const month = `0${time.getMonth() + 1}`.substr(-2)
-      const date = `0${time.getDate() - day}`.substr(-2)
-      const timestamp = Math.floor(time / 1000)
+      let year = time.getFullYear()
+      let month = time.getMonth()
+      let date = time.getDate() - day
+      let timestamp
+
+      const newTime = new Date(year, month, date)
+      month = `0${newTime.getMonth() + 1}`.substr(-2)
+      date = `0${time.getDate() - day}`.substr(-2)
+      timestamp = Math.floor(newTime / 1000)
 
       this.$store.dispatch('addNewTodo', {
         title: title,

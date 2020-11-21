@@ -43,13 +43,18 @@ export default {
       taskTitle: this.$store.state.currentTask.title
     }
   },
+  created () {
+    this.$bus.$emit('timesUp')
+  },
   methods: {
     goTask () {
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
+      this.$store.dispatch('changePomodoroViews', 'PomodoroCount')
     },
     newPomodoro () {
       this.$router.push('/')
       this.$store.dispatch('changeTimerViews', 'Pomodoro')
+      this.$store.dispatch('changePomodoroViews', 'PomodoroInit')
     }
   }
 }

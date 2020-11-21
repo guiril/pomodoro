@@ -34,7 +34,7 @@
           <todo-list-processing v-if="menu === 'Todo'" />
           <todo-list-done v-if="menu === 'Done'" />
         </div>
-        <todo-list-add />
+        <todo-list-add @changeMenu="changeMenu" />
       </div>
     </main>
   </div>
@@ -56,6 +56,11 @@ export default {
   data () {
     return {
       menu: 'Todo'
+    }
+  },
+  methods: {
+    changeMenu (menu) {
+      this.menu = menu
     }
   }
 }
