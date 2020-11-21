@@ -46,15 +46,17 @@
 export default {
   data () {
     return {
-      taskTitle: '“Unknown task”'
+      taskTitle: this.$store.state.currentTask.title
     }
   },
   methods: {
     getCountdownInit () {
-      this.$emit('get-countdown-init')
+      this.$store.dispatch('changeTimerViews', 'Pomodoro')
+      this.$store.dispatch('changePomodoroViews', 'PomodoroCount')
     },
     newPomodoro () {
-      this.$router.push('/')
+      this.$store.dispatch('changeTimerViews', 'Pomodoro')
+      this.$store.dispatch('changePomodoroViews', 'PomodoroInit')
     }
   }
 }
