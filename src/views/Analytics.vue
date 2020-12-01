@@ -250,11 +250,11 @@ export default {
       this.weeklyFirstDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day))
 
       // 計算這週最後一天的日期，並將時間修正為 23:59:59 再存到 data 裡的變數
-      lastDateObj = new Date(currentDateObj.setDate(this.today.date - this.today.day + 6))
+      lastDateObj = new Date(currentDateObj.setDate(currentDateObj.getDate() + 6))
       lastDateYear = lastDateObj.getFullYear()
       lastDateMonth = lastDateObj.getMonth()
       lastDateDate = lastDateObj.getDate()
-
+      // console.log(currentDateObj)
       this.weeklyLastDateObj = new Date(lastDateYear, lastDateMonth, lastDateDate, 23, 59, 59)
     },
     changeDaysFunc (btn) {
@@ -335,7 +335,7 @@ export default {
 
       // 先在日期陣列與資料放入週日
       const dateAry = [formate(dateObj)] // 放在 labels 的日期
-      dailyDataMap[`${dateObj.getMonth()}${dateObj.getDate()}`] = []
+      dailyDataMap[formate(dateObj)] = []
 
       for (let i = 0; i <= 6; i++) {
         const month = dateObj.getMonth()
@@ -344,7 +344,7 @@ export default {
         if (i <= 5) {
           dateObj.setDate(date + 1) // 週一到週六的日期
           dateAry.push(formate(dateObj)) // 格式化新增到 labels 日期陣列
-          dailyDataMap[`${month}${date + 1}`] = [] // 將日期設置成資料 map 的 key
+          dailyDataMap[formate(dateObj)] = [] // 將日期設置成資料 map 的 key
         }
 
         for (let j = 0; j < this.weeklyData.length; j++) {
@@ -352,7 +352,7 @@ export default {
           const dataDateObj = new Date(this.weeklyData[j].id * 1000)
 
           if (month === dataDateObj.getMonth() && date === dataDateObj.getDate()) {
-            dailyDataMap[`${month}${date}`].push(this.weeklyData[j])
+            dailyDataMap[formate(dateObj)].push(this.weeklyData[j])
           }
         }
       }
